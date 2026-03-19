@@ -1,0 +1,14 @@
+
+> temp-vite@0.0.0 build
+> vite build
+
+file:///C:/Users/SHASIHINI%20MALSHA/Development/ForgeX/node_modules/vite/dist/node/chunks/node.js:31
+import { escapePath, glob, globSync, isDynamicPattern } from "tinyglobby";
+         ^^^^^^^^^^
+SyntaxError: The requested module 'tinyglobby' does not provide an export named 'escapePath'
+    at #asyncInstantiate (node:internal/modules/esm/module_job:319:21)
+    at async ModuleJob.run (node:internal/modules/esm/module_job:422:5)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:661:26)
+    at async CAC.<anonymous> (file:///C:/Users/SHASIHINI%20MALSHA/Development/ForgeX/node_modules/vite/dist/node/cli.js:764:28)
+
+Node.js v24.13.1
