@@ -20,9 +20,9 @@ const Hero = () => {
       <div className="relative z-10 max-w-[1800px] mx-auto px-4 md:px-10 lg:px-16 w-full pt-20">
         <div className="max-w-2xl">
           {/* Subheading */}
-          <div className="flex items-center gap-4 mb-8">
-            <div className="w-12 h-0.5 bg-primary"></div>
-            <span className="text-primary font-semibold tracking-wider text-xs md:text-sm uppercase">Premium Fitness Club</span>
+          <div className="flex items-center gap-5 mb-8">
+            <div className="w-12 h-[2px] bg-primary"></div>
+            <span className="text-primary font-semibold tracking-[0.2em] text-[11px] uppercase">Premium Fitness Club</span>
           </div>
 
           <h1 className="text-white text-5xl md:text-7xl lg:text-8xl font-heading leading-none mb-10">
