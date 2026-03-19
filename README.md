@@ -1,16 +1,44 @@
-# React + Vite
+# ForgeX Gym Website
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Project Name
+ForgeX — Fitness Promotional Website
 
-Currently, two official plugins are available:
+## Tech Stack
+- React.js
+- Tailwind CSS
+- Vite
+- Vercel (Deployment)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Features
+- Fully responsive design
+- Hero, About, Services, Membership, Trainers, Contact sections
+- Contact form with validation
+- Smooth scroll animations
 
-## React Compiler
+## Setup Instructions
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### Prerequisites
+- Node.js installed
+- npm installed
 
-## Expanding the ESLint configuration
+### Installation
+# Clone the repository
+git clone https://github.com/yourusername/your-repo-name.git
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+# Navigate to project folder
+cd your-repo-name
+
+# Install dependencies
+npm install
+
+# Run development server
+npm run dev
+
+# Build for production
+npm run build
+
+## Live Link
+https://your-project.vercel.app
+
+## Figma Design
+https://figma.com/your-design-link
