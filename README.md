@@ -37,7 +37,7 @@ npm run dev
 npm run build
 
 ## Live Link
-https://your-project.vercel.app
+https://forge-x-fitness-website.vercel.app/
 
 ## Figma Design
-https://figma.com/your-design-link
+https://www.figma.com/proto/48n3ngMXfR4CIYS1YkrCfh/Untitled?page-id=0%3A1&node-id=118-199&viewport=-1153%2C-136%2C0.86&t=0duhXXHyAbfHwmBA-1&scaling=min-zoom&content-scaling=fixed
