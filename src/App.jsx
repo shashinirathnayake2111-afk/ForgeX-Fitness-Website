@@ -18,8 +18,7 @@ function App() {
       <Marquee />
       <About />
       <Services />
-      <Pricing />
-      <Trainers />
+      <Contact />
       <Footer />
     </div>
   )
