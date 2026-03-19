@@ -6,7 +6,7 @@ const About = () => {
       {/* Background Typography - Large fainted outlined text */}
       <div className="absolute top-1/2 left-0 w-full -translate-y-1/2 pointer-events-none select-none z-0 hidden md:block text-center">
         <h2 
-          className="text-[180px] md:text-[260px] lg:text-[320px] font-heading text-transparent opacity-[0.1] uppercase leading-none tracking-tighter"
+          className="text-[180px] md:text-[260px] lg:text-[320px] font-heading text-transparent opacity-[0.05] uppercase leading-none tracking-[0.1em]"
           style={{ WebkitTextStroke: '1.5px rgba(255,255,255,0.8)' }}
         >
           FORGEX
@@ -19,7 +19,7 @@ const About = () => {
           <div className="w-full lg:w-1/2 flex flex-col items-start z-10 py-5">
             <div className="flex items-center gap-5 mb-6">
               <div className="w-12 h-[2px] bg-primary"></div>
-              <span className="text-primary font-semibold tracking-[0.2em] text-[11px] uppercase">Who We Are</span>
+              <span className="text-primary font-bold tracking-[0.3em] text-[11px] uppercase">Who We Are</span>
             </div>
             
             <h2 className="text-white text-6xl md:text-[85px] font-heading mb-8 uppercase tracking-tight leading-[0.85]">

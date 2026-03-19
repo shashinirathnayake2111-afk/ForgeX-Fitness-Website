@@ -24,28 +24,6 @@ const Footer = () => {
 
   return (
     <footer className="w-full">
-      {/* Newsletter Section */}
-      <div className="bg-dark py-16 border-t border-b border-white/5 px-4 md:px-10 lg:px-16">
-        <div className="max-w-[1800px] mx-auto flex flex-col md:flex-row items-center justify-between gap-10">
-          <div className="max-w-md text-center md:text-left">
-            <h3 className="text-white text-3xl font-heading uppercase tracking-wider mb-2">JOIN THE <span className="text-primary">FORGE</span></h3>
-            <p className="text-[#a0a0a0] text-sm font-light">Subscribe to get the latest fitness tips, workout plans, and exclusive ForgeX offers.</p>
-          </div>
-          <div className="w-full max-w-md">
-            <form className="flex">
-              <input 
-                type="email" 
-                placeholder="YOUR EMAIL ADDRESS" 
-                className="bg-white/5 border border-white/10 px-6 py-4 text-white text-sm w-full focus:outline-none focus:border-primary transition-colors placeholder:text-white/20"
-              />
-              <button className="bg-primary text-black px-8 py-4 font-bold text-sm tracking-widest hover:bg-white transition-all">
-                SUBSCRIBE
-              </button>
-            </form>
-          </div>
-        </div>
-      </div>
-
       {/* Main Footer Content */}
       <div className="bg-dark py-20 md:py-28 px-4 md:px-10 lg:px-16">
         <div className="max-w-[1800px] mx-auto grid grid-cols-1 md:grid-cols-2 gap-16 lg:gap-32">
