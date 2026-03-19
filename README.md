@@ -1,6 +1,5 @@
 # ForgeX Gym Website
 
-## Project Name
 ForgeX — Fitness Promotional Website
 
 ## Tech Stack
