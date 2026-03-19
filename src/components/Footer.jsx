@@ -1,94 +1,157 @@
 import React from 'react';
 
 const Footer = () => {
+  const footerLinks = {
+    navigate: [
+      { name: 'Home', href: '#' },
+      { name: 'About', href: '#about' },
+      { name: 'Services', href: '#services' },
+    ],
+    services: [
+      { name: 'Strength Training', href: '#services' },
+      { name: 'Nutrition Plans', href: '#services' },
+      { name: 'Combat Fitness', href: '#services' },
+      { name: 'Hit & Cardio', href: '#services' },
+      { name: 'Personal Training', href: '#services' },
+    ],
+    support: [
+      { name: 'FAQ', href: '#' },
+      { name: 'Contact', href: '#contact' },
+      { name: 'Privacy Policies', href: '#' },
+      { name: 'Terms & Conditions', href: '#' },
+    ]
+  };
+
   return (
-    <footer id="contact" className="bg-black pt-20 pb-10 border-t border-white/10 w-full">
-      <div className="max-w-[1600px] mx-auto px-6 md:px-16 lg:px-24">
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
-          
-          {/* Brand Info */}
-          <div className="col-span-1 lg:col-span-1">
-            <div className="flex items-center gap-3 cursor-pointer mb-6">
-              <img src="/img/logo.jpg" alt="ForgeX Logo" className="h-10 w-10 md:h-12 md:w-12 rounded-full object-cover border-2 border-primary shadow-[0_0_10px_rgba(211,165,35,0.3)]" />
-              <div className="text-white font-heading tracking-widest flex items-baseline ml-1 mt-1">
-                <span className="text-3xl md:text-4xl">F</span>
-                <span className="text-2xl md:text-3xl">ORGE</span>
-                <span className="text-primary text-3xl md:text-4xl">X</span>
-              </div>
-            </div>
-            <p className="text-[#A0A0A0] text-sm leading-relaxed mb-6">
-              Forge your best self with our state-of-the-art facilities, expert coaching, and supportive fitness community.
-            </p>
+    <footer className="w-full">
+      {/* Newsletter Section */}
+      <div className="bg-dark py-16 border-t border-b border-white/5 px-4 md:px-10 lg:px-16">
+        <div className="max-w-[1800px] mx-auto flex flex-col md:flex-row items-center justify-between gap-10">
+          <div className="max-w-md text-center md:text-left">
+            <h3 className="text-white text-3xl font-heading uppercase tracking-wider mb-2">JOIN THE <span className="text-primary">FORGE</span></h3>
+            <p className="text-[#a0a0a0] text-sm font-light">Subscribe to get the latest fitness tips, workout plans, and exclusive ForgeX offers.</p>
           </div>
-
-          {/* Quick Links */}
-          <div>
-            <h4 className="text-white text-lg font-bold tracking-wider mb-6">QUICK LINKS</h4>
-            <ul className="space-y-4">
-              {['About Us', 'Services & Classes', 'Pricing Plans', 'Meet The Coaches', 'FAQs'].map((link, i) => (
-                <li key={i}>
-                  <a href="#" className="text-[#A0A0A0] hover:text-primary transition-colors text-sm font-medium">
-                    {link}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Contact */}
-          <div>
-            <h4 className="text-white text-lg font-bold tracking-wider mb-6">VISIT US</h4>
-            <ul className="space-y-4 text-[#A0A0A0] text-sm">
-              <li className="flex gap-3">
-                <span className="text-primary font-bold">A:</span>
-                123 Fitness Avenue, Iron District, NY 10001
-              </li>
-              <li className="flex gap-3">
-                <span className="text-primary font-bold">P:</span>
-                +1 (555) 123-4567
-              </li>
-              <li className="flex gap-3">
-                <span className="text-primary font-bold">E:</span>
-                info@forgex.com
-              </li>
-            </ul>
-          </div>
-
-          {/* Newsletter */}
-          <div>
-            <h4 className="text-white text-lg font-bold tracking-wider mb-6">NEWSLETTER</h4>
-            <p className="text-[#A0A0A0] text-sm mb-4">
-              Subscribe to get fitness tips and exclusive promotions.
-            </p>
+          <div className="w-full max-w-md">
             <form className="flex">
               <input 
                 type="email" 
-                placeholder="Email Address" 
-                className="bg-white/5 border border-white/10 text-white px-4 py-2 w-full focus:outline-none focus:border-primary placeholder-[#A0A0A0] text-sm"
+                placeholder="YOUR EMAIL ADDRESS" 
+                className="bg-white/5 border border-white/10 px-6 py-4 text-white text-sm w-full focus:outline-none focus:border-primary transition-colors placeholder:text-white/20"
               />
-              <button 
-                className="bg-primary text-dark font-bold px-4 py-2 hover:bg-yellow-400 transition-colors"
-                type="button"
-              >
-                JOIN
+              <button className="bg-primary text-black px-8 py-4 font-bold text-sm tracking-widest hover:bg-white transition-all">
+                SUBSCRIBE
               </button>
             </form>
           </div>
-
         </div>
+      </div>
 
-        {/* Footer Bottom */}
-        <div className="pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="text-[#808080] text-xs">
-            &copy; {new Date().getFullYear()} ForgeX Fitness. All Rights Reserved.
-          </p>
-          <div className="text-[#808080] text-xs space-x-4">
-            <a href="#" className="hover:text-white transition-colors">Privacy Policy</a>
-            <a href="#" className="hover:text-white transition-colors">Terms of Service</a>
+      {/* Main Footer Content */}
+      <div className="bg-dark py-20 md:py-28 px-4 md:px-10 lg:px-16">
+        <div className="max-w-[1800px] mx-auto grid grid-cols-1 md:grid-cols-2 gap-16 lg:gap-32">
+          
+          {/* Logo & Slogan Column */}
+          <div className="flex flex-col items-start gap-8">
+            <div className="flex items-center gap-3 cursor-pointer group">
+              <img 
+                src="/img/logo.jpg" 
+                alt="ForgeX Logo" 
+                className="h-10 w-10 md:h-12 md:w-12 rounded-full object-cover border-2 border-primary shadow-[0_0_10px_rgba(211,165,35,0.3)] transition-transform group-hover:scale-105" 
+              />
+              <div className="text-white font-heading tracking-widest flex items-baseline ml-1 mt-1 transition-transform group-hover:scale-105">
+                <span className="text-3xl md:text-4xl text-white">F</span>
+                <span className="text-2xl md:text-3xl text-white">ORGE</span>
+                <span className="text-primary text-3xl md:text-4xl">X</span>
+              </div>
+            </div>
+            <p className="text-white/70 text-[15px] leading-relaxed font-light max-w-sm">
+              Where strength is built, limits are broken, and your best self is forged.
+            </p>
+            {/* Social Icons */}
+            <div className="flex items-center gap-4">
+              {[
+                { name: 'Facebook', color: 'bg-[#1877F2]', icon: (
+                  <svg fill="currentColor" viewBox="0 0 24 24" className="w-5 h-5"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                )},
+                { name: 'Google', color: 'bg-white', icon: (
+                  <svg viewBox="0 0 48 48" className="w-5 h-5">
+                    <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z" />
+                    <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z" />
+                    <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z" />
+                    <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z" />
+                    <path fill="none" d="M0 0h48v48H0z" />
+                  </svg>
+                )},
+                { name: 'TikTok', color: 'bg-black', icon: (
+                  <svg fill="currentColor" viewBox="0 0 24 24" className="w-5 h-5"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.17-2.86-.6-4.12-1.31a6.34 6.34 0 01-2.22-2.23V14.5c0 3.33-1.88 6.55-5.18 7.6a7.28 7.28 0 01-9.66-4.32 7.28 7.28 0 014.34-9.66 7.25 7.25 0 013.92-.09c.14-.01.27.01.41.02V12.1c-.81-.24-1.72-.18-2.47.21-.75.39-1.29 1.1-1.48 1.94-.19.84-.03 1.74.45 2.45.48.71 1.25 1.18 2.09 1.3 2.11.3 4.25-1.07 4.25-3.51V.02z"/></svg>
+                )},
+                { name: 'Youtube', color: 'bg-[#FF0000]', icon: (
+                  <svg fill="currentColor" viewBox="0 0 24 24" className="w-5 h-5"><path d="M23.498 6.186a3.016 3.016 0 00-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 00.502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 002.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 002.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+                )}
+              ].map((social, idx) => (
+                <div 
+                  key={idx} 
+                  className={`${social.color} w-10 h-10 rounded-full flex items-center justify-center cursor-pointer hover:scale-110 transition-transform duration-300 shadow-lg`}
+                >
+                  <span className="text-white">{social.icon}</span>
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
 
+          {/* Links Section - Compacted and unified column */}
+          <div className="flex flex-col md:flex-row justify-between gap-12 md:gap-16">
+            {/* Navigate Column */}
+            <div>
+              <h4 className="text-primary text-[11px] font-bold tracking-[0.2em] uppercase mb-10">Navigate</h4>
+              <ul className="space-y-4">
+                {footerLinks.navigate.map((link, idx) => (
+                  <li key={idx}>
+                    <a href={link.href} className="text-white/80 text-[14px] font-light hover:text-primary transition-colors duration-300">
+                      {link.name}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Services Column */}
+            <div>
+              <h4 className="text-primary text-[11px] font-bold tracking-[0.2em] uppercase mb-10">Services</h4>
+              <ul className="space-y-4">
+                {footerLinks.services.map((link, idx) => (
+                  <li key={idx}>
+                    <a href={link.href} className="text-white/80 text-[14px] font-light hover:text-primary transition-colors duration-300">
+                      {link.name}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Support Column */}
+            <div>
+              <h4 className="text-primary text-[11px] font-bold tracking-[0.2em] uppercase mb-10">Support</h4>
+              <ul className="space-y-4">
+                {footerLinks.support.map((link, idx) => (
+                  <li key={idx}>
+                    <a href={link.href} className="text-white/80 text-[14px] font-light hover:text-primary transition-colors duration-300">
+                      {link.name}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      {/* Bar Below */}
+      <div className="bg-[#121212] py-6 text-center border-t border-white/5">
+        <p className="text-[#a0a0a0] text-[13px] font-light tracking-wide uppercase">
+          © 2026 ForgeX Fitness. All rights reserved.
+        </p>
       </div>
     </footer>
   );

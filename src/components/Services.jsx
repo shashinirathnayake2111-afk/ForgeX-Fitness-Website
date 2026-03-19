@@ -120,7 +120,7 @@ const Services = () => {
   ];
 
   return (
-    <section id="services" className="py-24 md:pt-20 md:pb-40 bg-dark w-full overflow-hidden relative">
+    <section id="services" className="py-24 md:pt-20 md:pb-40 bg-[#363636] w-full overflow-hidden relative">
       <div className="max-w-[1800px] mx-auto px-4 md:px-10 lg:px-16 w-full relative z-10">
         
         {/* Header Section */}

@@ -4,10 +4,9 @@ import Hero from './components/Hero'
 import Stats from './components/Stats'
 import Marquee from './components/Marquee'
 import About from './components/About'
-import Services from './components/Services'
-import Pricing from './components/Pricing'
-import Trainers from './components/Trainers'
-import Footer from './components/Footer'
+import Services from './components/Services';
+import Contact from './components/Contact';
+import Footer from './components/Footer';
 
 function App() {
   return (
