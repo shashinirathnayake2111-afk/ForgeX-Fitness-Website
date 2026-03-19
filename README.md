@@ -22,7 +22,7 @@ ForgeX — Fitness Promotional Website
 
 ### Installation
 # Clone the repository
-git clone https://github.com/yourusername/your-repo-name.git
+git clone https://github.com/shashinirathnayake2111-afk/ForgeX-Fitness-Website
 
 # Navigate to project folder
 cd your-repo-name
