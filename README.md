@@ -1,16 +1,72 @@
-# React + Vite
+# ForgeX Fitness - Premium Fitness Landing Page
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+ForgeX is a modern, high-end fitness center landing page built for performance, aesthetics, and user engagement. It features a luxury dark-mode design with vibrant yellow accents and interactive components.
 
-Currently, two official plugins are available:
+## 🚀 Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- **Dynamic Hero Section**: High-impact visuals with a professional call-to-action.
+- **Interactive About Section**: Brand storytelling with custom background typography and a clean layout.
+- **Services Carousel**: A premium, draggable carousel using `Swiper.js` with center-mode scaling for maximum focus on active offerings.
+- **Contact Section**: Professional lead generation form with real-time validation and a sophisticated success feedback screen.
+- **Modern Navigation**: Responsive navbar with backdrop-blur effects and brand-synchronized logo.
+- **Custom Branding**: Fully synchronized brand assets, including a custom favicon and optimized typography.
 
-## React Compiler
+## 🛠️ Tech Stack
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- **Framework**: [React](https://reactjs.org/)
+- **Bundler**: [Vite](https://vitejs.dev/)
+- **Styling**: [Tailwind CSS](https://tailwindcss.com/)
+- **Carousel**: [Swiper.js](https://swiperjs.com/)
+- **Animations**: CSS Transitions & Tailwind utility animations
 
-## Expanding the ESLint configuration
+## 📦 Getting Started
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+### Prerequisites
+
+- [Node.js](https://nodejs.org/) (v16.x or higher recommended)
+- [npm](https://www.npmjs.com/)
+
+### Installation
+
+1. Clone the repository:
+   ```bash
+   git clone <https://github.com/shashinirathnayake2111-afk/ForgeX-Fitness-Website.git>
+   ```
+
+2. Navigate to the project directory:
+   ```bash
+   cd ForgeX
+   ```
+
+3. Install dependencies:
+   ```bash
+   npm install
+   ```
+
+### Development
+
+Run the development server:
+```bash
+npm run dev
+```
+
+### Build
+
+Build the production-ready application:
+```bash
+npm run build
+```
+
+## 🎨 Color Palette
+
+| Color | Hex | Usage |
+|-------|-----|-------|
+| Primary Yellow | `#D3A523` | Accents, Buttons, Emphasis |
+| Dark Brown | `#352B1E` | Secondary backgrounds, Rich details |
+| Dark Gray | `#363636` | Section backgrounds, Cards |
+| Black | `#000000` | Main backgrounds, Contrast |
+| Off-White | `#F5F5F5` | Typography, Highlights |
+
+---
+
+Developed with ❤️ for ForgeX Fitness.

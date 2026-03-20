@@ -5,12 +5,18 @@
 @theme {
   --color-primary: #D3A523;
   --color-secondary: #352B1E;
-  --color-dark: #000000;
-  --color-gray: #363636;
-  --color-light: #F0F0F0;
+  --color-dark: #F5F5F5; /* Light mode background */
+  --color-light: #1A1A1A; /* Light mode text */
+  --color-gray: #E5E5E5; /* Light mode gray */
   
   --font-heading: "Bebas Neue", sans-serif;
   --font-body: "DM Sans", sans-serif;
+}
+
+.dark {
+  --color-dark: #000000;
+  --color-light: #F0F0F0;
+  --color-gray: #363636;
 }
 
 body {
@@ -20,6 +26,7 @@ body {
   margin: 0;
   padding: 0;
   -webkit-font-smoothing: antialiased;
+  transition: background-color 0.5s ease, color 0.5s ease;
 }
 
 h1, h2, h3, h4, h5, h6 {

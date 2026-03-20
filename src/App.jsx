@@ -7,20 +7,23 @@ import About from './components/About'
 import Services from './components/Services';
 import Contact from './components/Contact';
 import Footer from './components/Footer';
+import { ThemeProvider } from './context/ThemeContext';
 
 function App() {
   return (
-    <div className="min-h-screen bg-dark text-light antialiased selection:bg-primary selection:text-dark font-body">
-      <Navbar />
-      <Hero />
-      <Stats />
-      <Marquee />
-      <About />
-      <Services />
-      <Contact />
-      <Footer />
-    </div>
-  )
+    <ThemeProvider>
+      <div className="min-h-screen bg-white dark:bg-dark text-black dark:text-light transition-colors duration-500">
+        <Navbar />
+        <Hero />
+        <Stats />
+        <About />
+        <Marquee />
+        <Services />
+        <Contact />
+        <Footer />
+      </div>
+    </ThemeProvider>
+  );
 }
 
 export default App
