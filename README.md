@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # ForgeX Fitness - Premium Fitness Landing Page
 
 ForgeX is a modern, high-end fitness center landing page built for performance, aesthetics, and user engagement. It features a luxury dark-mode design with vibrant yellow accents and interactive components.
@@ -70,3 +71,48 @@ npm run build
 ---
 
 Developed with ❤️ for ForgeX Fitness.
+=======
+# ForgeX Gym Website
+
+ForgeX — Fitness Promotional Website
+
+## Tech Stack
+- React.js
+- Tailwind CSS
+- Vite
+- Vercel (Deployment)
+
+## Features
+- Fully responsive design
+- Hero, About, Services, Membership, Trainers, Contact sections
+- Contact form with validation
+- Smooth scroll animations
+
+## Setup Instructions
+
+### Prerequisites
+- Node.js installed
+- npm installed
+
+### Installation
+# Clone the repository
+git clone https://github.com/shashinirathnayake2111-afk/ForgeX-Fitness-Website
+
+# Navigate to project folder
+cd your-repo-name
+
+# Install dependencies
+npm install
+
+# Run development server
+npm run dev
+
+# Build for production
+npm run build
+
+## Live Link
+https://forge-x-fitness-website.vercel.app/
+
+## Figma Design
+https://www.figma.com/proto/48n3ngMXfR4CIYS1YkrCfh/Untitled?page-id=0%3A1&node-id=118-199&viewport=-1153%2C-136%2C0.86&t=0duhXXHyAbfHwmBA-1&scaling=min-zoom&content-scaling=fixed
+>>>>>>> 6a18cbd5eac42fecd21a09aa7ad538ac0126cdf1
