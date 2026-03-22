@@ -49,8 +49,6 @@ const Stats = () => {
                   {stat.label}
                 </span>
               </motion.div>
-              
-              {/* Divider */}
               {index < stats.length - 1 && (
                 <div className="hidden md:block w-px h-12 bg-black/5 dark:bg-white/10 self-center"></div>
               )}

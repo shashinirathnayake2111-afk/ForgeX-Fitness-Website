@@ -12,7 +12,6 @@ const Marquee = () => {
     "OPEN 24/7"
   ];
 
-  // The scrolling content block
   const content = items.map((item, index) => (
     <div key={index} className="flex items-center">
       <span className="text-black text-sm md:text-base font-heading tracking-[0.2em] px-6 md:px-10">
@@ -33,11 +32,9 @@ const Marquee = () => {
       <div className="flex whitespace-nowrap animate-marquee shrink-0">
         {content}
       </div>
-      {/* Duplicate for seamless looping */}
       <div className="flex whitespace-nowrap animate-marquee shrink-0" aria-hidden="true">
         {content}
       </div>
-      {/* A third one just in case the screen is extremely wide! */}
       <div className="flex whitespace-nowrap animate-marquee shrink-0" aria-hidden="true">
         {content}
       </div>

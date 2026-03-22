@@ -1,4 +1,3 @@
-// Mock API service for ForgeX Fitness
 const servicesData = [
   {
     id: 1,
@@ -45,7 +44,6 @@ const servicesData = [
 ];
 
 export const fetchServices = async () => {
-  // Simulate network delay
   return new Promise((resolve) => {
     setTimeout(() => {
       resolve(servicesData);

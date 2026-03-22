@@ -3,15 +3,15 @@ import { motion } from 'framer-motion';
 
 const About = () => {
   return (
-    <section id="about" className="py-24 md:pt-40 md:pb-20 bg-dark w-full overflow-hidden relative">
+    <section id="about" className="py-20 md:py-28 bg-dark w-full overflow-hidden relative">
       {/* Background Typography */}
       <div className="absolute top-1/2 left-0 w-full -translate-y-1/2 pointer-events-none select-none z-0 hidden md:block text-center">
         <motion.h2 
           initial={{ opacity: 0, scale: 0.9 }}
-          whileInView={{ opacity: 0.05, scale: 1 }}
+          whileInView={{ opacity: 0.2, scale: 1 }}
           transition={{ duration: 1.5 }}
-          className="text-[180px] md:text-[260px] lg:text-[320px] font-heading text-transparent uppercase leading-none tracking-[0.1em]"
-          style={{ WebkitTextStroke: '1.5px rgba(211,165,35,0.3)' }}
+          className="text-[180px] md:text-[260px] lg:text-[320px] font-heading text-primary/5 uppercase leading-none tracking-tight"
+          style={{ WebkitTextStroke: '2px rgba(211,165,35,0.8)' }}
         >
           FORGEX
         </motion.h2>
