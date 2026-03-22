@@ -64,4 +64,17 @@ npm run build
 - **Figma Design**: [View Design Template](https://www.figma.com/proto/48n3ngMXfR4CIYS1YkrCfh/Untitled?page-id=0%3A1&node-id=118-199&viewport=-1153%2C-136%2C0.86&t=0duhXXHyAbfHwmBA-1&scaling=min-zoom&content-scaling=fixed)
 
 ---
+<<<<<<< HEAD
 Developed with ❤️ by Antigravity for ForgeX Fitness.
+=======
+
+## Live Link
+https://forge-x-fitness-website.vercel.app/
+
+## Figma Design
+https://www.figma.com/proto/48n3ngMXfR4CIYS1YkrCfh/Untitled?page-id=0%3A1&node-id=118-199&viewport=-1153%2C-136%2C0.86&t=0duhXXHyAbfHwmBA-1&scaling=min-zoom&content-scaling=fixed
+>>>>>>> 6a18cbd5eac42fecd21a09aa7ad538ac0126cdf1
+
+Developed with ❤️ for ForgeX Fitness.
+=======
+>>>>>>> 23b1f597ae5bb5ce13e24eade1cf731102567e5d

@@ -158,27 +158,32 @@ const Services = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8, delay: 0.3 }}
-            className="w-full md:w-auto"
+            className="w-full lg:w-1/2 flex flex-col gap-8"
           >
-            <div className="relative group mb-6">
+            {/* Search Input Container */}
+            <div className="flex items-center justify-between gap-6 pb-4 border-b border-black/10 dark:border-white/10 group focus-within:border-primary transition-all duration-500">
               <input 
                 type="text" 
                 placeholder="SEARCH SERVICES..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full md:w-80 bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 px-6 py-4 text-black dark:text-white font-heading tracking-widest text-sm focus:outline-none focus:border-primary transition-all placeholder:text-black/30 dark:placeholder:text-white/20"
+                className="w-full bg-transparent text-black dark:text-white font-heading tracking-[0.2em] text-lg md:text-xl lg:text-2xl focus:outline-none placeholder:text-black/20 dark:placeholder:text-white/10"
               />
-              <div className="absolute right-4 top-1/2 -translate-y-1/2 text-primary">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" strokeLinecap="round" /></svg>
+              <div className="text-primary group-focus-within:scale-110 transition-transform duration-500">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-6 h-6 md:w-8 md:h-8"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" strokeLinecap="round" /></svg>
               </div>
             </div>
-            <div className="flex flex-wrap gap-3 overflow-x-auto pb-2 scrollbar-hide md:max-w-xl">
+
+            {/* Category Tabs Container */}
+            <div className="flex flex-wrap gap-3">
               {categories.map(cat => (
                 <button
                   key={cat}
                   onClick={() => setActiveCategory(cat)}
-                  className={`px-4 py-2 text-[10px] font-bold tracking-widest uppercase transition-all whitespace-nowrap ${
-                    activeCategory === cat ? 'bg-primary text-black' : 'bg-black/5 dark:bg-white/5 text-black dark:text-white hover:bg-black/10 dark:hover:bg-white/10'
+                  className={`px-5 py-2.5 text-[11px] font-bold tracking-[0.1em] uppercase transition-all duration-300 ${
+                    activeCategory === cat 
+                      ? 'bg-primary text-black shadow-lg shadow-primary/20 scale-105' 
+                      : 'bg-black/5 dark:bg-white/5 text-black dark:text-white hover:bg-black/10 dark:hover:bg-white/10'
                   }`}
                 >
                   {cat}
