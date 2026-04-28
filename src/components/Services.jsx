@@ -106,7 +106,7 @@ const Services = () => {
   }, [searchTerm, activeCategory, servicesData]);
 
   return (
-    <section id="services" className="py-24 md:py-32 bg-dark w-full overflow-hidden relative">
+    <section id="services" className="pt-16 pb-24 md:pt-20 md:pb-32 bg-dark w-full overflow-hidden relative">
       <style>
         {`
           .services-swiper .swiper-pagination-bullet {
@@ -131,11 +131,18 @@ const Services = () => {
             transform: scale(1.15) !important;
             z-index: 10;
           }
+          .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+          }
+          .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+          }
         `}
       </style>
-
+ 
       <div className="max-w-[1800px] mx-auto px-4 md:px-10 lg:px-16 relative z-10">
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-10 mb-16 md:mb-24">
+        <div className="flex flex-col md:flex-row md:items-start justify-between gap-10 mb-16 md:mb-20">
           <motion.div 
             initial={{ opacity: 0, x: -30 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -158,32 +165,32 @@ const Services = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8, delay: 0.3 }}
-            className="w-full lg:w-1/2 flex flex-col gap-8"
+            className="w-full lg:max-w-[850px] flex flex-col gap-8"
           >
             {/* Search Input Container */}
-            <div className="flex items-center justify-between gap-6 pb-4 border-b border-black/10 dark:border-white/10 group focus-within:border-primary transition-all duration-500">
+            <div className="flex items-center gap-4 bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 px-6 py-5 group focus-within:border-primary transition-all duration-500 w-full md:w-[850px] shadow-2xl shadow-black/10">
+              <div className="text-primary group-focus-within:scale-110 transition-transform duration-500">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-6 h-6"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" strokeLinecap="round" /></svg>
+              </div>
               <input 
                 type="text" 
                 placeholder="SEARCH SERVICES..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full bg-transparent text-black dark:text-white font-heading tracking-[0.2em] text-lg md:text-xl lg:text-2xl focus:outline-none placeholder:text-black/20 dark:placeholder:text-white/10"
+                className="w-full bg-transparent text-black dark:text-white font-heading tracking-[0.2em] text-base md:text-lg lg:text-xl focus:outline-none placeholder:text-black/30 dark:placeholder:text-white/20"
               />
-              <div className="text-primary group-focus-within:scale-110 transition-transform duration-500">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-6 h-6 md:w-8 md:h-8"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" strokeLinecap="round" /></svg>
-              </div>
             </div>
 
             {/* Category Tabs Container */}
-            <div className="flex flex-wrap gap-3">
+            <div className="flex flex-nowrap items-center gap-2 md:gap-3 w-full md:w-[850px] h-14 overflow-x-auto overflow-y-hidden scrollbar-hide select-none transition-all duration-500">
               {categories.map(cat => (
                 <button
                   key={cat}
                   onClick={() => setActiveCategory(cat)}
-                  className={`px-5 py-2.5 text-[11px] font-bold tracking-[0.1em] uppercase transition-all duration-300 ${
+                  className={`px-4 py-2.5 text-[10px] md:text-[11px] font-bold tracking-[0.1em] uppercase transition-all duration-300 border border-transparent whitespace-nowrap ${
                     activeCategory === cat 
-                      ? 'bg-primary text-black shadow-lg shadow-primary/20 scale-105' 
-                      : 'bg-black/5 dark:bg-white/5 text-black dark:text-white hover:bg-black/10 dark:hover:bg-white/10'
+                      ? 'bg-primary text-black shadow-lg shadow-primary/20' 
+                      : 'bg-black/5 dark:bg-white/5 text-black dark:text-white hover:border-primary/50'
                   }`}
                 >
                   {cat}

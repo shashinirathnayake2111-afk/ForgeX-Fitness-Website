@@ -1,112 +1,138 @@
 import React from 'react';
+import { motion } from 'framer-motion';
 
 const Pricing = () => {
   const plans = [
     {
-      name: "BASIC",
+      name: "STARTER",
       price: "$29",
       period: "/month",
       features: [
-        "Full gym access during business hours",
-        "Free introductory personal training",
-        "Locker room & shower access",
-        "Water station & towel service"
+        "Personalized Workout Plans",
+        "Full Gym Access (Peak)",
+        "Water & Towel Service",
+        "Locker Room Access"
       ],
       isPopular: false
     },
     {
-      name: "PRO",
+      name: "ELITE",
       price: "$49",
       period: "/month",
       features: [
-        "24/7 Premium gym access",
-        "All group fitness classes included",
-        "Monthly 1-on-1 personal training",
-        "Premium locker & sauna access",
-        "Nutrition & Diet consultation"
+        "24/7 Premium Access",
+        "Unlimited Group Classes",
+        "Monthly 1-on-1 Training",
+        "Cryotherapy & Recovery",
+        "Nutrition Consultation"
       ],
       isPopular: true
     },
     {
-      name: "ELITE",
+      name: "PREMIUM",
       price: "$89",
       period: "/month",
       features: [
-        "Everything in PRO tier",
-        "Unlimited personal training sessions",
-        "Massage & recovery zone access",
-        "Bring a guest for free anytime",
-        "Exclusive ForgeX merchandise"
+        "Everything in Elite",
+        "Private VIP Lounge",
+        "Weekly PT Sessions",
+        "Free Guest Pass Always",
+        "Custom Performance Kit"
       ],
       isPopular: false
     }
   ];
 
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: { staggerChildren: 0.2 }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 30 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.8 } }
+  };
+
   return (
-    <section id="pricing" className="py-24 bg-dark w-full relative">
-      <div className="absolute inset-x-0 -top-px h-px bg-gradient-to-r from-transparent via-white/10 to-transparent"></div>
+    <section id="pricing" className="py-24 md:py-32 bg-dark w-full relative overflow-hidden">
+      {/* Background Decorative Element */}
+      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/5 rounded-full blur-[120px] -translate-y-1/2 translate-x-1/2"></div>
       
-      <div className="max-w-[1600px] mx-auto px-6 md:px-16 lg:px-24">
+      <div className="max-w-[1800px] mx-auto px-4 md:px-10 lg:px-16 relative z-10">
         
         {/* Section Header */}
-        <div className="text-center mb-20 flex flex-col items-center">
-          <div className="flex items-center gap-4 mb-4">
-            <div className="w-8 h-0.5 bg-primary"></div>
-            <span className="text-primary font-semibold tracking-wider text-sm uppercase">Pricing Plans</span>
-            <div className="w-8 h-0.5 bg-primary"></div>
+        <motion.div 
+          initial={{ opacity: 0, y: -20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8 }}
+          className="flex flex-col md:flex-row md:items-end justify-between gap-10 mb-20"
+        >
+          <div className="max-w-2xl">
+            <div className="flex items-center gap-5 mb-6">
+              <div className="w-12 h-[2px] bg-primary"></div>
+              <span className="text-primary font-bold tracking-[0.3em] text-[11px] uppercase">Flexible Membership</span>
+            </div>
+            <h2 className="text-light text-5xl md:text-7xl lg:text-8xl font-heading uppercase leading-none">
+              CHOOSE YOUR <span className="text-transparent" style={{ WebkitTextStroke: '2px var(--color-primary)' }}>LEGACY</span>
+            </h2>
           </div>
-          <h2 className="text-white text-5xl md:text-6xl font-heading mb-6">
-            UNLOCK YOUR <span className="text-transparent" style={{ WebkitTextStroke: '1.5px white' }}>POTENTIAL</span>
-          </h2>
-        </div>
+        </motion.div>
 
         {/* Pricing Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-center">
+        <motion.div 
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+        >
           {plans.map((plan, index) => (
-            <div 
-              key={index} 
-              className={`relative p-8 md:p-10 rounded shadow-2xl transition-transform duration-300 hover:-translate-y-2
-                ${plan.isPopular 
-                  ? 'bg-gradient-to-br from-black to-gray-900 border-2 border-primary transform md:-translate-y-4 md:scale-105 z-10' 
-                  : 'bg-black/50 border border-white/10 backdrop-blur-sm'
-                }`}
+            <motion.div 
+              key={plan.name}
+              variants={itemVariants}
+              className={`relative group bg-zinc-900/40 border border-white/5 p-10 backdrop-blur-md transition-all duration-500 hover:border-primary/30 flex flex-col justify-between h-full ${plan.isPopular ? 'border-primary/20 shadow-2xl shadow-primary/5 scale-105 z-10' : ''}`}
             >
               {plan.isPopular && (
-                <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-primary text-dark font-bold text-xs uppercase px-4 py-1.5 rounded tracking-wider shadow-[0_0_15px_rgba(211,165,35,0.4)]">
+                <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-primary text-black font-bold text-[10px] tracking-widest uppercase px-6 py-2 rounded-sm shadow-xl shadow-primary/20">
                   Most Popular
                 </div>
               )}
               
-              <h3 className="text-white text-2xl font-bold tracking-wider mb-6 text-center">{plan.name}</h3>
-              
-              <div className="flex justify-center items-end mb-8 border-b border-white/10 pb-8">
-                <span className={`text-6xl font-heading ${plan.isPopular ? 'text-primary' : 'text-white'}`}>{plan.price}</span>
-                <span className="text-[#A0A0A0] text-sm ml-2 mb-2">{plan.period}</span>
+              <div>
+                <div className="mb-10 flex justify-between items-start">
+                  <div>
+                    <span className="text-primary text-[10px] font-bold tracking-[0.3em] uppercase block mb-3">{plan.name}</span>
+                    <div className="flex items-baseline">
+                      <span className="text-light text-6xl font-heading tracking-tighter">{plan.price}</span>
+                      <span className="text-white/40 text-sm ml-2 font-light uppercase tracking-widest">{plan.period}</span>
+                    </div>
+                  </div>
+                </div>
+                
+                <ul className="space-y-5 mb-12">
+                  {plan.features.map((feature, i) => (
+                    <li key={i} className="flex items-center gap-4 text-white/70 group-hover:text-white/100 transition-colors duration-300">
+                      <div className="w-1.5 h-1.5 rounded-full bg-primary/40 group-hover:bg-primary transition-colors"></div>
+                      <span className="text-[15px] font-light tracking-wide">{feature}</span>
+                    </li>
+                  ))}
+                </ul>
               </div>
               
-              <ul className="space-y-4 mb-10">
-                {plan.features.map((feature, i) => (
-                  <li key={i} className="flex gap-3 text-[#D0D0D0] text-sm">
-                    <svg className={`w-5 h-5 flex-shrink-0 ${plan.isPopular ? 'text-primary' : 'text-white'}`} fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                    </svg>
-                    <span>{feature}</span>
-                  </li>
-                ))}
-              </ul>
-              
               <button 
-                className={`w-full py-3.5 px-6 font-bold tracking-wider text-sm rounded transition-all duration-300
-                  ${plan.isPopular 
-                    ? 'bg-primary text-dark hover:bg-yellow-400 hover:shadow-[0_0_20px_rgba(211,165,35,0.4)] hover:scale-105' 
-                    : 'bg-transparent border border-white text-white hover:bg-white hover:text-dark hover:scale-105'
-                  }`}
+                className={`w-full py-5 px-6 font-bold tracking-[0.2em] text-[11px] uppercase transition-all duration-500 rounded-sm border ${plan.isPopular 
+                  ? 'bg-primary text-black border-primary hover:bg-light hover:border-light hover:text-black' 
+                  : 'bg-transparent text-white border-white/20 hover:bg-white hover:text-black hover:border-white'}`}
               >
-                SELECT PLAN
+                START YOUR STORY
               </button>
-            </div>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
 
       </div>
     </section>
