@@ -2,486 +2,293 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
 import Navbar from '../components/Navbar';
+import { Link, useNavigate } from 'react-router-dom';
 import { 
   Activity, Dumbbell, Calendar, Trophy, ArrowRight, LogOut, 
-  Settings, Bell, LogIn, User, MapPin, Zap, TrendingUp, Flame, Medal, Target, Scale, PieChart as PieIcon, Award
+  Settings, Bell, Zap, TrendingUp, Flame, Medal, Target, 
+  MessageSquare, QrCode, Plus, Users, Sparkles, ChevronRight
 } from 'lucide-react';
-import { Link, useNavigate } from 'react-router-dom';
-import TrafficTracker from '../components/TrafficTracker';
-import { 
-  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell,
-  AreaChart, Area, LineChart, Line, PieChart, Pie, Legend
-} from 'recharts';
+import { AreaChart, Area, ResponsiveContainer, Tooltip } from 'recharts';
 
-const WORKOUT_DATA = [
-  { day: 'Mon', gym: 1, home: 0 },
-  { day: 'Tue', gym: 0, home: 1 },
-  { day: 'Wed', gym: 1, home: 0 },
-  { day: 'Thu', gym: 1, home: 1 },
-  { day: 'Fri', gym: 0, home: 1 },
-  { day: 'Sat', gym: 1, home: 0 },
-  { day: 'Sun', gym: 0, home: 0 },
+const SPARKLINE_DATA = [
+  { day: 'Mon', value: 40 },
+  { day: 'Tue', value: 45 },
+  { day: 'Wed', value: 42 },
+  { day: 'Thu', value: 55 },
+  { day: 'Fri', value: 58 },
+  { day: 'Sat', value: 75 },
+  { day: 'Sun', value: 85 },
 ];
 
-const PROGRESS_DATA = [
-  { day: 'Mon', progress: 40 },
-  { day: 'Tue', progress: 45 },
-  { day: 'Wed', progress: 42 },
-  { day: 'Thu', progress: 55 },
-  { day: 'Fri', progress: 58 },
-  { day: 'Sat', progress: 65 },
-  { day: 'Sun', progress: 72 },
-];
-
-const WEIGHT_DATA = [
-  { week: 'W1', weight: 82.5 },
-  { week: 'W2', weight: 81.2 },
-  { week: 'W3', weight: 80.8 },
-  { week: 'W4', weight: 79.5 },
-  { week: 'W5', weight: 78.9 },
-  { week: 'W6', weight: 77.4 },
-  { week: 'W7', weight: 76.8 },
-  { week: 'W8', weight: 75.4 },
-];
-
-const MEASUREMENTS_DATA = [
-  { month: 'Jan', chest: 102, waist: 95, arms: 35 },
-  { month: 'Feb', chest: 104, waist: 92, arms: 36 },
-  { month: 'Mar', chest: 106, waist: 89, arms: 37 },
-  { month: 'Apr', chest: 108, waist: 86, arms: 38 },
-];
-
-const ATTENDANCE_DATA = [
-  { name: 'Attended', value: 24, color: '#d3a523' },
-  { name: 'Missed', value: 6, color: 'rgba(255,255,255,0.05)' },
-];
+const ActivityRings = () => (
+  <div className="relative w-48 h-48 sm:w-56 sm:h-56 flex items-center justify-center">
+    {/* Outer Ring: Move (Gold) */}
+    <svg className="absolute w-full h-full transform -rotate-90" viewBox="0 0 200 200">
+      <circle cx="100" cy="100" r="85" fill="none" stroke="rgba(211,165,35,0.1)" strokeWidth="14" />
+      <circle cx="100" cy="100" r="85" fill="none" stroke="#d3a523" strokeWidth="14" strokeDasharray="534" strokeDashoffset="130" strokeLinecap="round" className="drop-shadow-[0_0_12px_rgba(211,165,35,0.8)]" />
+    </svg>
+    {/* Middle Ring: Lift (Orange) */}
+    <svg className="absolute w-40 h-40 sm:w-48 sm:h-48 transform -rotate-90" viewBox="0 0 160 160">
+      <circle cx="80" cy="80" r="65" fill="none" stroke="rgba(249,115,22,0.1)" strokeWidth="14" />
+      <circle cx="80" cy="80" r="65" fill="none" stroke="#f97316" strokeWidth="14" strokeDasharray="408" strokeDashoffset="150" strokeLinecap="round" className="drop-shadow-[0_0_12px_rgba(249,115,22,0.8)]" />
+    </svg>
+    {/* Inner Ring: Focus (Cyan) */}
+    <svg className="absolute w-32 h-32 sm:w-40 sm:h-40 transform -rotate-90" viewBox="0 0 120 120">
+      <circle cx="60" cy="60" r="45" fill="none" stroke="rgba(6,182,212,0.1)" strokeWidth="14" />
+      <circle cx="60" cy="60" r="45" fill="none" stroke="#06b6d4" strokeWidth="14" strokeDasharray="282" strokeDashoffset="40" strokeLinecap="round" className="drop-shadow-[0_0_12px_rgba(6,182,212,0.8)]" />
+    </svg>
+    <div className="absolute flex flex-col items-center justify-center">
+      <Flame className="w-8 h-8 sm:w-10 sm:h-10 text-white drop-shadow-[0_0_15px_rgba(255,255,255,0.8)]" />
+    </div>
+  </div>
+);
 
 export default function Dashboard() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
-  
-  // Traffic Tracker State
-  const [trafficCount, setTrafficCount] = React.useState(() => {
-    const saved = localStorage.getItem('forgex_live_traffic');
-    return saved ? parseInt(saved) : 15;
-  });
-
-  const [isCheckedIn, setIsCheckedIn] = React.useState(() => {
-    return localStorage.getItem(`forgex_checked_in_${user?.id}`) === 'true';
-  });
-
-  React.useEffect(() => {
-    localStorage.setItem('forgex_live_traffic', trafficCount.toString());
-  }, [trafficCount]);
-
-  React.useEffect(() => {
-    if (user) {
-      localStorage.setItem(`forgex_checked_in_${user.id}`, isCheckedIn.toString());
-    }
-  }, [isCheckedIn, user]);
-
-  const handleTrafficToggle = () => {
-    if (isCheckedIn) {
-      setTrafficCount(prev => Math.max(0, prev - 1));
-      setIsCheckedIn(false);
-    } else {
-      setTrafficCount(prev => prev + 1);
-      setIsCheckedIn(true);
-    }
-  };
 
   if (!user) return null;
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a] bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-white/[0.04] via-[#0a0a0a] to-black text-white selection:bg-primary selection:text-black font-sans">
+    <div className="min-h-screen bg-[#050505] bg-[radial-gradient(circle_at_top_right,_var(--tw-gradient-stops))] from-white/[0.03] via-[#050505] to-black text-white selection:bg-primary selection:text-black font-sans pb-32">
       <Navbar />
       
-      <div className="pt-32 pb-20 px-4 md:px-12 lg:px-24 xl:px-32">
+      <div className="pt-28 md:pt-36 px-4 md:px-8 lg:px-16 xl:px-24">
         <div className="max-w-[1600px] mx-auto">
           
-          {/* Header Section */}
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 mb-16 border-b border-white/10 pb-10">
+          {/* Hero Header */}
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-12">
             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
-              <div className="flex items-center gap-2 mb-2">
-                <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
-                <span className="text-[10px] font-bold tracking-[0.3em] uppercase text-white/70">Personal Dashboard</span>
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/30 mb-4">
+                <Sparkles className="w-3.5 h-3.5 text-primary animate-pulse" />
+                <span className="text-[9px] font-bold tracking-[0.3em] uppercase text-primary">Top 10% This Week</span>
               </div>
-              <h1 className="font-heading text-5xl md:text-6xl text-white uppercase tracking-tighter leading-none">
-                G'DAY, <span className="text-primary">{user.name.split(' ')[0]}</span>
+              <h1 className="font-heading text-6xl md:text-7xl lg:text-8xl text-white uppercase tracking-tighter leading-none">
+                G'DAY, <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-amber-200">{user.name.split(' ')[0]}</span>
               </h1>
             </motion.div>
 
-            <div className="flex items-center gap-3 bg-white/10 p-1.5 rounded-2xl border border-white/20 backdrop-blur-xl">
-              <button className="w-10 h-10 rounded-xl hover:bg-white/20 flex items-center justify-center transition-all">
-                <Bell className="w-4 h-4 text-white/80" />
-              </button>
-              <button className="w-10 h-10 rounded-xl hover:bg-white/20 flex items-center justify-center transition-all">
-                <Settings className="w-4 h-4 text-white/80" />
-              </button>
-              <div className="w-[1px] h-6 bg-white/20 mx-1" />
-              <button 
-                onClick={() => { logout(); navigate('/'); }}
-                className="flex items-center gap-2 px-4 py-2 rounded-xl bg-red-500/10 text-red-500 text-[10px] font-bold tracking-widest uppercase hover:bg-red-500 hover:text-white transition-all"
-              >
-                <LogOut className="w-3.5 h-3.5" />
-                Logout
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 rounded-full border-2 border-primary/50 overflow-hidden shadow-[0_0_20px_rgba(211,165,35,0.2)]">
+                <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${user.name}`} alt="Profile" className="w-full h-full bg-white/5" />
+              </div>
+              <button onClick={() => { logout(); navigate('/'); }} className="w-12 h-12 rounded-full bg-white/5 border border-white/10 hover:bg-red-500/20 hover:border-red-500/50 hover:text-red-500 transition-all flex items-center justify-center">
+                <LogOut className="w-4 h-4" />
               </button>
             </div>
           </div>
 
-          {/* Milestone Alert Banner */}
-          <motion.div 
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="mb-8 bg-gradient-to-r from-[#d3a523]/30 via-[#d3a523]/10 to-transparent border-2 border-[#d3a523]/60 rounded-2xl p-5 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 backdrop-blur-2xl shadow-[0_0_50px_rgba(211,165,35,0.2)]"
-          >
-            <div className="flex items-center gap-5">
-              <div className="w-12 h-12 rounded-full bg-primary flex items-center justify-center text-black shrink-0 animate-pulse">
-                <Target className="w-6 h-6" />
-              </div>
-              <div>
-                <h4 className="font-heading text-xl text-primary uppercase tracking-widest leading-tight drop-shadow-md">Milestone Unlocked!</h4>
-                <p className="text-[11px] text-white/90 font-bold tracking-[0.2em] uppercase mt-1">You've reached your 5kg weight loss goal. Keep crushing it!</p>
-              </div>
-            </div>
-            <button className="px-8 py-3 bg-white text-black text-[10px] font-bold tracking-[0.2em] uppercase rounded-xl hover:bg-primary transition-all shadow-lg w-full md:w-auto">
-              Claim Reward
-            </button>
-          </motion.div>
-
-          {/* Main Grid System */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 xl:gap-10">
+          {/* BENTO BOX GRID SYSTEM */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-6 lg:gap-8">
             
-            {/* LEFT COLUMN: Main Stats & Activity */}
-            <div className="lg:col-span-8 space-y-8">
+            {/* LARGE BOX: Activity Rings (Spans 4 columns) */}
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.1 }}
+              className="lg:col-span-5 xl:col-span-4 bg-gradient-to-br from-white/[0.08] to-white/[0.01] border border-white/10 rounded-[3rem] p-8 flex flex-col items-center justify-center relative overflow-hidden backdrop-blur-2xl shadow-2xl"
+            >
+              <div className="absolute top-8 left-8 text-left">
+                <h3 className="font-heading text-xl tracking-widest uppercase">Forge Core</h3>
+                <p className="text-[10px] text-white/50 font-bold tracking-[0.2em] uppercase">Daily Targets</p>
+              </div>
               
-              {/* TOP ROW: Live Traffic Feature */}
-              <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
-                <div className="xl:col-span-2">
-                  <TrafficTracker count={trafficCount} />
+              <div className="mt-12 mb-8">
+                <ActivityRings />
+              </div>
+
+              <div className="w-full grid grid-cols-3 gap-2 text-center mt-auto">
+                <div>
+                  <div className="text-primary font-heading text-2xl">850</div>
+                  <div className="text-[8px] text-white/50 uppercase tracking-widest font-bold">Move kcal</div>
                 </div>
-                <motion.button
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  onClick={handleTrafficToggle}
-                  className={`h-full flex flex-col items-center justify-center gap-4 rounded-[2.5rem] p-8 border transition-all duration-500 ${
-                    isCheckedIn 
-                      ? 'bg-red-500/5 border-red-500/20 text-red-500 hover:bg-red-500 hover:text-white' 
-                      : 'bg-primary text-black hover:shadow-[0_0_40px_rgba(211,165,35,0.3)] border-primary'
-                  }`}
-                >
-                  <div className={`w-16 h-16 rounded-full flex items-center justify-center ${isCheckedIn ? 'bg-red-500/20' : 'bg-black/10'}`}>
-                    {isCheckedIn ? <LogOut className="w-8 h-8" /> : <LogIn className="w-8 h-8" />}
-                  </div>
-                  <div className="text-center">
-                    <div className="font-heading text-xl tracking-widest uppercase leading-tight">
-                      {isCheckedIn ? 'CHECK OUT' : 'CHECK IN'}
-                    </div>
-                    <div className="text-[9px] font-bold tracking-[0.2em] opacity-80 uppercase mt-1">
-                      {isCheckedIn ? 'End your session' : 'Scan entrance QR'}
-                    </div>
-                  </div>
-                </motion.button>
+                <div>
+                  <div className="text-orange-500 font-heading text-2xl">12k</div>
+                  <div className="text-[8px] text-white/50 uppercase tracking-widest font-bold">Lift kg</div>
+                </div>
+                <div>
+                  <div className="text-cyan-500 font-heading text-2xl">45</div>
+                  <div className="text-[8px] text-white/50 uppercase tracking-widest font-bold">Focus min</div>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* TALL BOX: AI Feed (Spans 4 columns) */}
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.2 }}
+              className="lg:col-span-4 bg-gradient-to-b from-primary/[0.15] to-transparent border border-primary/20 rounded-[3rem] p-8 relative overflow-hidden backdrop-blur-2xl shadow-[0_0_40px_rgba(211,165,35,0.1)] flex flex-col"
+            >
+              <div className="flex justify-between items-center mb-8">
+                <div>
+                  <h3 className="font-heading text-xl tracking-widest uppercase text-primary drop-shadow-md">Forge AI</h3>
+                  <p className="text-[10px] text-primary/70 font-bold tracking-[0.2em] uppercase">Live Insights</p>
+                </div>
+                <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center">
+                  <MessageSquare className="w-4 h-4 text-primary" />
+                </div>
               </div>
 
-              {/* STATS ROW */}
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-                {[
-                  { label: 'Workouts', value: '12', icon: Activity, color: 'text-primary' },
-                  { label: 'Avg Pulse', value: '72', icon: Zap, color: 'text-amber-400' },
-                  { label: 'Burn Rate', value: '450', icon: TrendingUp, color: 'text-orange-400' },
-                  { label: 'Focus Score', value: '92%', icon: Trophy, color: 'text-blue-400' },
-                ].map((stat, i) => (
-                  <motion.div 
-                    key={stat.label}
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: i * 0.1 }}
-                    className="group bg-gradient-to-br from-white/[0.08] to-white/[0.02] border border-white/10 shadow-2xl p-6 rounded-3xl hover:border-white/20 hover:from-white/[0.1] hover:to-white/[0.04] transition-all duration-300 backdrop-blur-xl"
-                  >
-                    <div className={`w-10 h-10 rounded-2xl bg-white/5 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform ${stat.color}`}>
-                      <stat.icon className="w-5 h-5" />
-                    </div>
-                    <div className="text-3xl font-heading tracking-tighter mb-1">{stat.value}</div>
-                    <div className="text-[9px] font-bold tracking-[0.2em] uppercase text-white/60">{stat.label}</div>
-                  </motion.div>
-                ))}
-              </div>
-
-              {/* CHARTS AREA */}
-              <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
-                {/* Workout Bar Chart */}
-                <motion.div 
-                  initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-                  className="bg-gradient-to-br from-white/[0.08] to-white/[0.02] border border-white/10 shadow-2xl p-8 rounded-[2.5rem] relative overflow-hidden backdrop-blur-xl"
-                >
-                  <div className="flex justify-between items-center mb-10">
-                    <h3 className="font-heading text-lg tracking-widest uppercase flex items-center gap-3">
-                      <Activity className="w-5 h-5 text-primary" /> Training Split
-                    </h3>
-                    <div className="flex gap-4">
-                       <div className="flex items-center gap-2">
-                        <div className="w-1.5 h-1.5 rounded-full bg-primary" />
-                        <span className="text-[8px] font-bold text-white/70 uppercase tracking-widest">Gym</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <div className="w-1.5 h-1.5 rounded-full bg-white/40" />
-                        <span className="text-[8px] font-bold text-white/70 uppercase tracking-widest">Home</span>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="h-[200px] w-full">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <BarChart data={WORKOUT_DATA}>
-                        <XAxis 
-                          dataKey="day" axisLine={false} tickLine={false} 
-                          tick={{ fill: 'rgba(255,255,255,0.5)', fontSize: 9, fontWeight: 700 }}
-                        />
-                        <Tooltip cursor={{ fill: 'rgba(255,255,255,0.02)' }} contentStyle={{ backgroundColor: '#111', border: 'none', borderRadius: '12px' }} />
-                        <Bar dataKey="gym" fill="#d3a523" radius={[4, 4, 0, 0]} barSize={12} />
-                        <Bar dataKey="home" fill="rgba(255,255,255,0.1)" radius={[4, 4, 0, 0]} barSize={12} />
-                      </BarChart>
-                    </ResponsiveContainer>
-                  </div>
-                </motion.div>
-
-                {/* Fitness Area Chart */}
-                <motion.div 
-                  initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-                  className="bg-gradient-to-br from-white/[0.08] to-white/[0.02] border border-white/10 shadow-2xl p-8 rounded-[2.5rem] backdrop-blur-xl"
-                >
-                  <div className="flex justify-between items-center mb-10">
-                    <h3 className="font-heading text-lg tracking-widest uppercase flex items-center gap-3">
-                      <TrendingUp className="w-5 h-5 text-primary" /> Progress Curve
-                    </h3>
-                    <span className="text-[10px] font-bold text-primary tracking-widest">+12% THIS WEEK</span>
-                  </div>
-                  <div className="h-[200px] w-full">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <AreaChart data={PROGRESS_DATA}>
-                        <defs>
-                          <linearGradient id="colorProgress" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="5%" stopColor="#d3a523" stopOpacity={0.4}/>
-                            <stop offset="95%" stopColor="#d3a523" stopOpacity={0}/>
-                          </linearGradient>
-                        </defs>
-                        <XAxis 
-                          dataKey="day" axisLine={false} tickLine={false} 
-                          tick={{ fill: 'rgba(255,255,255,0.5)', fontSize: 9, fontWeight: 700 }}
-                        />
-                        <Tooltip contentStyle={{ backgroundColor: '#111', border: 'none', borderRadius: '12px' }} />
-                        <Area type="monotone" dataKey="progress" stroke="#d3a523" strokeWidth={3} fill="url(#colorProgress)" />
-                      </AreaChart>
-                    </ResponsiveContainer>
-                  </div>
-                </motion.div>
-              </div>
-
-              {/* ADVANCED CHARTS ROW: Gamification Data */}
-              <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
+              <div className="flex flex-col gap-4 overflow-hidden relative flex-1">
+                <div className="absolute top-0 w-full h-8 bg-gradient-to-b from-[#0e0e0e] to-transparent z-10 rounded-t-xl" />
                 
-                {/* Weight Tracker Line Chart (Full Width) */}
-                <motion.div 
-                  initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-                  className="xl:col-span-2 bg-gradient-to-br from-white/[0.08] to-white/[0.02] border border-white/10 shadow-2xl p-8 rounded-[2.5rem] relative overflow-hidden backdrop-blur-xl"
-                >
-                  <div className="flex justify-between items-center mb-10">
-                    <h3 className="font-heading text-lg tracking-widest uppercase flex items-center gap-3">
-                      <Scale className="w-5 h-5 text-primary" /> Weight Tracker
-                    </h3>
-                    <div className="px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-[9px] font-bold tracking-widest uppercase">
-                      -7.1 kg Total
-                    </div>
+                {/* AI Messages */}
+                <div className="bg-white/5 border border-white/10 p-4 rounded-2xl animate-fade-in-up">
+                  <div className="flex gap-3">
+                    <Zap className="w-4 h-4 text-primary shrink-0 mt-0.5" />
+                    <p className="text-xs text-white/90 leading-relaxed font-light">Your recovery is dipping below 60%. Highly recommend swapping tomorrow's HIIT for a 30m Yoga session.</p>
                   </div>
-                  <div className="h-[200px] w-full">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <LineChart data={WEIGHT_DATA}>
-                        <XAxis dataKey="week" axisLine={false} tickLine={false} tick={{ fill: 'rgba(255,255,255,0.5)', fontSize: 9, fontWeight: 700 }} />
-                        <YAxis domain={['dataMin - 2', 'dataMax + 2']} hide />
-                        <Tooltip contentStyle={{ backgroundColor: '#111', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px' }} />
-                        <Line type="monotone" dataKey="weight" stroke="#d3a523" strokeWidth={4} dot={{ r: 4, fill: '#111', stroke: '#d3a523', strokeWidth: 2 }} activeDot={{ r: 6 }} />
-                      </LineChart>
-                    </ResponsiveContainer>
-                  </div>
-                </motion.div>
+                </div>
 
-                {/* Body Measurements Bar Chart */}
-                <motion.div 
-                  initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-                  className="bg-gradient-to-br from-white/[0.08] to-white/[0.02] border border-white/10 shadow-2xl p-8 rounded-[2.5rem] relative overflow-hidden backdrop-blur-xl"
-                >
-                  <div className="flex justify-between items-center mb-10">
-                    <h3 className="font-heading text-lg tracking-widest uppercase flex items-center gap-3">
-                      <Activity className="w-5 h-5 text-primary" /> Measurements
-                    </h3>
+                <div className="bg-white/5 border border-white/10 p-4 rounded-2xl opacity-80">
+                  <div className="flex gap-3">
+                    <Dumbbell className="w-4 h-4 text-white/60 shrink-0 mt-0.5" />
+                    <p className="text-xs text-white/70 leading-relaxed font-light">You hit a PR on Bench Press yesterday! Your chest volume is up 12% this month.</p>
                   </div>
-                  <div className="h-[200px] w-full">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <BarChart data={MEASUREMENTS_DATA}>
-                        <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{ fill: 'rgba(255,255,255,0.5)', fontSize: 9, fontWeight: 700 }} />
-                        <Tooltip cursor={{ fill: 'rgba(255,255,255,0.02)' }} contentStyle={{ backgroundColor: '#111', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px' }} />
-                        <Bar dataKey="chest" fill="#d3a523" radius={[4, 4, 0, 0]} barSize={8} />
-                        <Bar dataKey="waist" fill="#ffffff" radius={[4, 4, 0, 0]} barSize={8} opacity={0.6} />
-                        <Bar dataKey="arms" fill="#ffffff" radius={[4, 4, 0, 0]} barSize={8} opacity={0.2} />
-                      </BarChart>
-                    </ResponsiveContainer>
-                  </div>
-                  <div className="flex justify-center gap-4 mt-4">
-                    <div className="flex items-center gap-2"><div className="w-2 h-2 rounded-full bg-primary" /><span className="text-[8px] font-bold text-white/70 uppercase tracking-widest">Chest</span></div>
-                    <div className="flex items-center gap-2"><div className="w-2 h-2 rounded-full bg-white/60" /><span className="text-[8px] font-bold text-white/70 uppercase tracking-widest">Waist</span></div>
-                    <div className="flex items-center gap-2"><div className="w-2 h-2 rounded-full bg-white/20" /><span className="text-[8px] font-bold text-white/70 uppercase tracking-widest">Arms</span></div>
-                  </div>
-                </motion.div>
+                </div>
 
-                {/* Consistency Score Pie Chart */}
-                <motion.div 
-                  initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-                  className="bg-gradient-to-br from-white/[0.08] to-white/[0.02] border border-white/10 shadow-2xl p-8 rounded-[2.5rem] relative overflow-hidden backdrop-blur-xl"
-                >
-                  <div className="flex justify-between items-center mb-2">
-                    <h3 className="font-heading text-lg tracking-widest uppercase flex items-center gap-3">
-                      <PieIcon className="w-5 h-5 text-primary" /> Consistency
-                    </h3>
+                <div className="bg-white/5 border border-white/10 p-4 rounded-2xl opacity-50">
+                  <div className="flex gap-3">
+                    <Target className="w-4 h-4 text-white/60 shrink-0 mt-0.5" />
+                    <p className="text-xs text-white/70 leading-relaxed font-light">Consistency check: You're 3 workouts away from the Titanium Badge.</p>
                   </div>
-                  <div className="h-[220px] w-full relative flex items-center justify-center">
-                    <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none mt-2">
-                      <span className="text-4xl font-heading text-white">80%</span>
-                      <span className="text-[9px] font-bold tracking-widest uppercase text-white/60">Attendance</span>
-                    </div>
-                    <ResponsiveContainer width="100%" height="100%">
-                      <PieChart>
-                        <Pie
-                          data={ATTENDANCE_DATA}
-                          innerRadius={65}
-                          outerRadius={85}
-                          paddingAngle={5}
-                          dataKey="value"
-                          stroke="none"
-                        >
-                          {ATTENDANCE_DATA.map((entry, index) => (
-                            <Cell key={`cell-${index}`} fill={entry.color} />
-                          ))}
-                        </Pie>
-                        <Tooltip contentStyle={{ backgroundColor: '#111', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px' }} />
-                      </PieChart>
-                    </ResponsiveContainer>
-                  </div>
-                </motion.div>
+                </div>
 
+                <div className="absolute bottom-0 w-full h-12 bg-gradient-to-t from-[#090909] to-transparent z-10 rounded-b-xl" />
               </div>
 
-              {/* AI PLANNER BANNER */}
-              <motion.div className="bg-gradient-to-r from-primary/20 to-primary/5 border border-primary/20 shadow-2xl p-10 rounded-[3rem] relative overflow-hidden group backdrop-blur-xl">
-                <div className="absolute -right-10 -bottom-10 opacity-5 group-hover:opacity-10 transition-opacity">
-                  <Dumbbell className="w-64 h-64 rotate-45" />
+              <Link to="/ai-planner" className="mt-6 w-full py-4 bg-primary text-black rounded-2xl text-[10px] font-bold tracking-[0.2em] uppercase hover:bg-white transition-all text-center flex items-center justify-center gap-2 shadow-lg">
+                Open Full Planner <ArrowRight className="w-3.5 h-3.5" />
+              </Link>
+            </motion.div>
+
+            {/* WIDE COLUMN: Quick Stats & Social */}
+            <div className="lg:col-span-3 xl:col-span-4 flex flex-col gap-6 lg:gap-8">
+              
+              {/* Sparkline Chart */}
+              <motion.div 
+                initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.3 }}
+                className="bg-gradient-to-br from-white/[0.08] to-white/[0.01] border border-white/10 rounded-[2.5rem] p-6 backdrop-blur-2xl shadow-2xl flex-1 flex flex-col justify-between"
+              >
+                <div className="flex justify-between items-start mb-4">
+                  <div>
+                    <h3 className="font-heading text-lg tracking-widest uppercase">Trend</h3>
+                    <div className="text-3xl font-heading text-primary mt-1">+14%</div>
+                  </div>
+                  <TrendingUp className="w-5 h-5 text-white/40" />
                 </div>
-                <div className="relative z-10 max-w-xl">
-                  <h2 className="font-heading text-4xl text-white mb-4 uppercase tracking-tighter">AI AGENT: READY</h2>
-                  <p className="text-white/80 text-sm mb-8 leading-relaxed font-light">
-                    Your personalized training protocol has been updated based on your recent "Focus Score". Open the ForgeX AI to review today's targets.
-                  </p>
-                  <Link 
-                    to="/ai-planner"
-                    className="inline-flex items-center gap-3 bg-white text-black px-8 py-4 rounded-2xl text-[10px] font-bold tracking-[0.2em] uppercase hover:bg-primary transition-all duration-500"
-                  >
-                    Launch Planner <ArrowRight className="w-4 h-4" />
-                  </Link>
+                <div className="h-24 w-full -mx-2">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <AreaChart data={SPARKLINE_DATA}>
+                      <defs>
+                        <linearGradient id="glowArea" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="5%" stopColor="#d3a523" stopOpacity={0.6}/>
+                          <stop offset="95%" stopColor="#d3a523" stopOpacity={0}/>
+                        </linearGradient>
+                      </defs>
+                      <Area type="natural" dataKey="value" stroke="#d3a523" strokeWidth={3} fill="url(#glowArea)" />
+                      <Tooltip cursor={false} contentStyle={{ display: 'none' }} />
+                    </AreaChart>
+                  </ResponsiveContainer>
                 </div>
               </motion.div>
+
+              {/* Social/Live Widget */}
+              <motion.div 
+                initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.4 }}
+                className="bg-gradient-to-br from-white/[0.08] to-white/[0.01] border border-white/10 rounded-[2.5rem] p-6 backdrop-blur-2xl shadow-2xl flex-1"
+              >
+                <div className="flex justify-between items-center mb-6">
+                  <h3 className="font-heading text-lg tracking-widest uppercase">Live at ForgeX</h3>
+                  <div className="flex items-center gap-2">
+                    <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+                    <span className="text-[9px] font-bold text-white/50 uppercase tracking-widest">24 Members</span>
+                  </div>
+                </div>
+                
+                <div className="flex items-center gap-3">
+                  <div className="flex -space-x-3">
+                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=John" className="w-10 h-10 rounded-full border-2 border-[#111] bg-white/10" />
+                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Sarah" className="w-10 h-10 rounded-full border-2 border-[#111] bg-white/10" />
+                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Mike" className="w-10 h-10 rounded-full border-2 border-[#111] bg-white/10" />
+                  </div>
+                  <div className="text-xs text-white/70 font-light leading-tight">
+                    <span className="font-bold text-white">Kasun</span> & 2 friends are lifting right now.
+                  </div>
+                </div>
+              </motion.div>
+
             </div>
+          </div>
 
-
-            {/* RIGHT COLUMN: Profile & Schedule */}
-            <div className="lg:col-span-4 space-y-8">
-              
-              {/* Profile Card */}
-              <div className="bg-gradient-to-b from-white/[0.08] to-white/[0.02] border border-white/10 shadow-2xl rounded-[3rem] p-10 text-center relative overflow-hidden backdrop-blur-xl">
-                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-primary to-transparent" />
-                <div className="relative z-10">
-                  <div className="w-32 h-32 rounded-full bg-white/5 border-2 border-white/10 mx-auto mb-6 p-2">
-                    <div className="w-full h-full rounded-full overflow-hidden border border-primary/30">
-                      <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${user.name}`} alt="Profile" className="w-full h-full" />
-                    </div>
-                  </div>
-                  <h3 className="font-heading text-3xl text-white mb-1 uppercase tracking-tight">{user.name}</h3>
-                  <p className="text-primary text-[10px] font-bold tracking-[0.4em] uppercase mb-6">{user.plan} MEMBER</p>
-                  
-                  {/* Streak Badge */}
-                  <div className="inline-flex items-center gap-2 bg-orange-500/10 border border-orange-500/20 px-4 py-1.5 rounded-full mb-8">
-                    <Flame className="w-4 h-4 text-orange-500" />
-                    <span className="text-orange-500 text-[10px] font-bold tracking-[0.2em] uppercase">14 Day Streak!</span>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-3 mb-4">
-                    <div className="bg-white/10 border border-white/20 p-4 rounded-2xl">
-                      <div className="text-xl font-heading mb-1">75.4</div>
-                      <div className="text-[8px] font-bold text-white/60 uppercase tracking-widest">Weight (kg)</div>
-                    </div>
-                    <div className="bg-white/10 border border-white/20 p-4 rounded-2xl">
-                      <div className="text-xl font-heading mb-1">12.2%</div>
-                      <div className="text-[8px] font-bold text-white/60 uppercase tracking-widest">Body Fat</div>
-                    </div>
-                  </div>
-
-                  {/* Badges Section Inside Profile */}
-                  <div className="mt-8 mb-8 text-left border-t border-white/10 pt-6">
-                    <div className="flex justify-between items-center mb-4">
-                      <h4 className="font-heading text-lg tracking-widest uppercase text-white">Badges</h4>
-                      <span className="text-[9px] font-bold text-primary uppercase tracking-widest">3 / 12 Unlocked</span>
-                    </div>
-                    <div className="space-y-3">
-                      {[
-                        { title: 'Consistent King', desc: '7 days streak', icon: Medal, active: true },
-                        { title: 'Heavy Lifter', desc: 'Moved 10,000kg', icon: Dumbbell, active: true },
-                        { title: 'Early Bird', desc: '5 AM workouts', icon: Target, active: true },
-                        { title: 'Iron Lung', desc: 'Cardio master', icon: Award, active: false },
-                      ].map((badge, i) => (
-                        <div key={i} className={`flex items-center gap-4 p-3 rounded-2xl border transition-all hover:scale-[1.02] cursor-pointer ${badge.active ? 'bg-primary/10 border-primary/20' : 'bg-white/5 border-white/10'}`}>
-                          <div className={`w-10 h-10 shrink-0 rounded-xl flex items-center justify-center ${badge.active ? 'bg-primary/20 text-primary' : 'bg-white/5 text-white/20'}`}>
-                            <badge.icon className="w-5 h-5" />
-                          </div>
-                          <div>
-                            <div className={`text-[11px] font-bold uppercase tracking-widest ${badge.active ? 'text-white' : 'text-white/40'}`}>{badge.title}</div>
-                            <div className={`text-[9px] font-bold uppercase tracking-[0.2em] mt-1 ${badge.active ? 'text-primary/70' : 'text-white/20'}`}>{badge.desc}</div>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                  
-                  <button className="w-full py-4 rounded-2xl bg-white/5 border border-white/10 text-[9px] font-bold tracking-widest uppercase hover:bg-white/10 transition-all">
-                    Profile Settings
-                  </button>
+          {/* SECOND ROW BENTO */}
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-6 lg:gap-8 mt-6 lg:mt-8">
+            
+            {/* Gamification / Profile Strip */}
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }}
+              className="md:col-span-12 lg:col-span-8 bg-gradient-to-r from-white/[0.08] to-transparent border border-white/10 rounded-[2.5rem] p-6 flex flex-col sm:flex-row items-center justify-between gap-6 backdrop-blur-2xl"
+            >
+              <div className="flex items-center gap-6 w-full sm:w-auto">
+                <div className="w-16 h-16 rounded-2xl bg-orange-500/20 border border-orange-500/30 flex items-center justify-center shrink-0">
+                  <Flame className="w-8 h-8 text-orange-500 drop-shadow-[0_0_10px_rgba(249,115,22,0.8)]" />
+                </div>
+                <div>
+                  <h3 className="font-heading text-2xl tracking-widest uppercase text-white">14 Day Streak!</h3>
+                  <p className="text-[10px] text-white/60 font-bold tracking-[0.2em] uppercase">Consistency is key</p>
                 </div>
               </div>
 
-              {/* Upcoming Schedule */}
-              <div className="bg-gradient-to-b from-white/[0.08] to-white/[0.02] border border-white/10 shadow-2xl rounded-[2.5rem] p-8 backdrop-blur-xl">
-                <h3 className="font-heading text-lg tracking-widest uppercase mb-6 flex items-center gap-3">
-                  <Calendar className="w-5 h-5 text-primary" /> Timeline
-                </h3>
-                <div className="space-y-4">
-                  {[
-                    { name: 'HIIT Conditioning', time: '18:00', date: 'Today', active: true },
-                    { name: 'Strength Alpha', time: '07:30', date: 'Tomorrow', active: false },
-                    { name: 'Yoga recovery', time: '10:00', date: 'WED', active: false },
-                  ].map((item, i) => (
-                    <div key={i} className={`flex items-center gap-4 p-4 rounded-2xl border transition-all ${item.active ? 'bg-primary/10 border-primary/40' : 'bg-white/5 border-white/10'}`}>
-                      <div className={`w-10 h-10 rounded-xl flex flex-col items-center justify-center font-heading ${item.active ? 'bg-primary text-black' : 'bg-white/10 text-white/60'}`}>
-                        <div className="text-[8px] uppercase leading-none">{item.date}</div>
-                        <div className="text-sm">{item.time.split(':')[0]}</div>
-                      </div>
-                      <div>
-                        <div className={`text-xs font-bold uppercase tracking-widest ${item.active ? 'text-white' : 'text-white/80'}`}>{item.name}</div>
-                        <div className="text-[9px] text-white/60 uppercase tracking-widest">Coach: Kasun</div>
-                      </div>
+              <div className="flex gap-4 w-full sm:w-auto overflow-x-auto pb-2 sm:pb-0 hide-scrollbar">
+                {[
+                  { icon: Medal, label: 'King', active: true },
+                  { icon: Dumbbell, label: 'Heavy', active: true },
+                  { icon: Target, label: 'Early', active: false }
+                ].map((b, i) => (
+                  <div key={i} className={`flex flex-col items-center gap-2 shrink-0 ${b.active ? 'opacity-100' : 'opacity-30'}`}>
+                    <div className={`w-12 h-12 rounded-xl border flex items-center justify-center ${b.active ? 'bg-primary/20 border-primary/40 text-primary' : 'bg-white/5 border-white/10 text-white'}`}>
+                      <b.icon className="w-5 h-5" />
                     </div>
-                  ))}
-                </div>
-                <button className="w-full mt-6 py-4 rounded-2xl border border-white/10 text-[9px] font-bold tracking-widest uppercase hover:bg-white hover:text-black transition-all">
-                  Full Schedule
-                </button>
+                    <span className="text-[8px] font-bold uppercase tracking-widest text-white/70">{b.label}</span>
+                  </div>
+                ))}
               </div>
+            </motion.div>
 
-            </div>
-  
+            {/* Schedule Mini Card */}
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6 }}
+              className="md:col-span-12 lg:col-span-4 bg-gradient-to-br from-white/[0.08] to-white/[0.01] border border-white/10 rounded-[2.5rem] p-6 backdrop-blur-2xl flex items-center justify-between group cursor-pointer hover:border-white/30 transition-all"
+            >
+              <div>
+                <h3 className="font-heading text-xl tracking-widest uppercase text-white mb-1">Next Session</h3>
+                <p className="text-[10px] text-primary font-bold tracking-[0.2em] uppercase">Today, 18:00 • HIIT</p>
+              </div>
+              <div className="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center group-hover:bg-white group-hover:text-black transition-all">
+                <ChevronRight className="w-5 h-5" />
+              </div>
+            </motion.div>
+          </div>
+
+        </div>
+      </div>
+
+      {/* FLOATING ACTION BAR (Gen-Z Mobile App Feel) */}
+      <motion.div 
+        initial={{ y: 100 }} animate={{ y: 0 }} transition={{ type: "spring", stiffness: 200, damping: 20 }}
+        className="fixed bottom-6 left-1/2 transform -translate-x-1/2 bg-black/60 backdrop-blur-3xl border border-white/10 p-2 rounded-full shadow-[0_10px_40px_rgba(0,0,0,0.8)] z-50 flex items-center gap-2"
+      >
+        <button className="flex flex-col items-center justify-center w-16 h-16 rounded-full hover:bg-white/10 transition-all group">
+          <QrCode className="w-6 h-6 text-white/70 group-hover:text-white transition-colors mb-1" />
+          <span className="text-[7px] font-bold uppercase tracking-widest text-white/50 group-hover:text-white">Scan</span>
+        </button>
+        <button className="flex flex-col items-center justify-center w-20 h-20 rounded-full bg-gradient-to-tr from-primary to-amber-200 text-black shadow-[0_0_20px_rgba(211,165,35,0.4)] hover:scale-105 transition-all transform -translate-y-4">
+          <Plus className="w-8 h-8 mb-0.5" />
+          <span className="text-[8px] font-bold uppercase tracking-widest">Log</span>
+        </button>
+        <button className="flex flex-col items-center justify-center w-16 h-16 rounded-full hover:bg-white/10 transition-all group">
+          <Users className="w-6 h-6 text-white/70 group-hover:text-white transition-colors mb-1" />
+          <span className="text-[7px] font-bold uppercase tracking-widest text-white/50 group-hover:text-white">Social</span>
+        </button>
+      </motion.div>
+
+    </div>
+  );
+}
