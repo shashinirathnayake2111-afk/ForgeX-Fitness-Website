@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
 import Navbar from '../components/Navbar';
@@ -6,10 +6,10 @@ import Sidebar from '../components/Sidebar';
 import TrafficTracker from '../components/TrafficTracker';
 import { Link, useNavigate } from 'react-router-dom';
 import { 
-  Activity, Dumbbell, Calendar, Trophy, ArrowRight, LogOut, 
-  Settings, Bell, Zap, TrendingUp, Flame, Medal, Target, 
-  Scale, MessageSquare, QrCode, Plus, Users, Sparkles, ChevronRight, Award
+  Play, Flame, Zap, Trophy, TrendingUp, Calendar, ChevronRight, MessageSquare, Bell, Search, Settings, Filter, Download, ExternalLink, Share2, MoreHorizontal, User, LogOut,
+  Activity, Dumbbell, ArrowRight, Medal, Target, Scale, QrCode, Plus, Users, Sparkles, Award
 } from 'lucide-react';
+import { supabase } from '../lib/supabase';
 import { 
   LineChart, Line, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid 
 } from 'recharts';
@@ -55,8 +55,56 @@ const ActivityRings = () => (
   </div>
 );
 
-export default function Dashboard() {
-  const { user, logout } = useAuth();
+const ALL_BADGES = [
+  { id: 'rookie', title: 'Rookie Lifter', requiredXP: 500, desc: 'First steps', longDesc: 'You started your journey! This badge is awarded to those who take their first steps into the forge.', rarity: 'Common', img: 'https://cdn-icons-png.flaticon.com/512/5968/5968923.png', color: 'from-blue-400/20 to-blue-600/5' },
+  { id: 'consistent', title: 'Consistent King', requiredXP: 2000, desc: '7 days streak', longDesc: 'You have consistently hit the gym for 7 days straight without missing a session. Your dedication is inspiring!', rarity: 'Rare', img: 'https://cdn-icons-png.flaticon.com/512/5968/5968923.png', color: 'from-amber-400/20 to-yellow-600/5' },
+  { id: 'heavy', title: 'Heavy Lifter', requiredXP: 5000, desc: 'Moved 10,000kg', longDesc: 'You have moved a cumulative weight of 10,000kg across all your lifts. Your strength is reaching legendary levels.', rarity: 'Epic', img: 'https://cdn-icons-png.flaticon.com/512/2964/2964514.png', color: 'from-primary/20 to-amber-600/5' },
+  { id: 'goal', title: 'Goal Crusher', requiredXP: 10000, desc: 'Major Goal Reached', longDesc: 'You set a major target and absolutely crushed it. This badge commemorates your incredible dedication.', rarity: 'Legendary', img: 'https://cdn-icons-png.flaticon.com/512/3112/3112946.png', color: 'from-primary/20 to-amber-600/5' },
+  { id: 'sleep', title: 'Sleep Master', requiredXP: 15000, desc: '8h Sleep for 7 days', longDesc: 'Recovery is half the battle. You have prioritized your rest and allowed your muscles to grow.', rarity: 'Rare', img: 'https://cdn-icons-png.flaticon.com/512/3094/3094831.png', color: 'from-indigo-400/20 to-purple-600/5' },
+  { id: 'water', title: 'Hydration Hero', requiredXP: 18000, desc: '3L Water Daily', longDesc: 'You are perfectly hydrated. Your performance and recovery are at their peak.', rarity: 'Common', img: 'https://cdn-icons-png.flaticon.com/512/3105/3105807.png', color: 'from-cyan-400/20 to-blue-600/5' },
+  { id: 'legend', title: 'Forge Legend', requiredXP: 25000, desc: 'Top 1% Elite', longDesc: 'Only the top 1% of athletes reach this status. You are a true legend of the forge.', rarity: 'Mythic', img: 'https://cdn-icons-png.flaticon.com/512/3112/3112946.png', color: 'from-purple-500/20 to-indigo-600/5' },
+];
+
+const Dashboard = () => {
+  const { user, logout, updateBadges } = useAuth();
+  const [leaderboard, setLeaderboard] = useState([]);
+
+  useEffect(() => {
+    fetchLeaderboard();
+  }, [user]);
+
+  const fetchLeaderboard = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('full_name, points, level')
+        .order('points', { ascending: false })
+        .limit(5);
+
+      if (error) throw error;
+      
+      const MOCK_COMPETITORS = [
+        { full_name: 'Kasun Perera', points: 12500, level: 15 },
+        { full_name: 'Dilshan Silva', points: 10200, level: 12 },
+        { full_name: 'Nimesh Rathnayake', points: 8900, level: 10 },
+        { full_name: 'Sachini Fernando', points: 7500, level: 8 }
+      ];
+
+      const allUsers = [...(data || []), ...MOCK_COMPETITORS]
+        .sort((a, b) => b.points - a.points)
+        .slice(0, 6);
+
+      setLeaderboard(allUsers.map((p, i) => ({
+        rank: i + 1,
+        name: p.full_name,
+        xp: p.points,
+        level: p.level,
+        isMe: p.full_name === user?.name
+      })));
+    } catch (err) {
+      console.error('Error fetching leaderboard:', err.message);
+    }
+  };
   const navigate = useNavigate();
 
   // Traffic Tracker State
@@ -70,6 +118,80 @@ export default function Dashboard() {
   const [isCheckedIn, setIsCheckedIn] = React.useState(() => {
     return localStorage.getItem(`forgex_checked_in_${user?.id}`) === 'true';
   });
+
+  // Smart Watch Sync State
+  const [isSyncing, setIsSyncing] = React.useState(false);
+  const [livePulse, setLivePulse] = React.useState(72);
+  const [workoutTimer, setWorkoutTimer] = React.useState(0);
+
+  const { updateStats } = useAuth();
+
+  // Pulse Simulation
+  React.useEffect(() => {
+    const interval = setInterval(() => {
+      setLivePulse(prev => {
+        const base = isSyncing ? 110 : 70;
+        const variation = Math.floor(Math.random() * 20);
+        return base + variation;
+      });
+    }, 2000);
+    return () => clearInterval(interval);
+  }, [isSyncing]);
+
+  // Workout Timer Simulation
+  React.useEffect(() => {
+    let interval;
+    if (isSyncing) {
+      interval = setInterval(() => {
+        setWorkoutTimer(prev => prev + 1);
+      }, 1000);
+    }
+    return () => clearInterval(interval);
+  }, [isSyncing]);
+
+  const handleSyncToggle = async () => {
+    if (isSyncing) {
+      // Ending workout, sync to DB
+      const sessionSeconds = workoutTimer;
+      if (sessionSeconds < 10) { // Safety: Don't sync sessions shorter than 10s
+        setIsSyncing(false);
+        setWorkoutTimer(0);
+        return;
+      }
+
+      const hoursAdded = parseFloat((sessionSeconds / 3600).toFixed(2));
+      const currentHours = user?.stats?.totalHours || 0;
+      const currentWorkouts = user?.stats?.workoutsCompleted || 0;
+      const currentCalories = user?.stats?.caloriesBurned || 0;
+      const currentWeight = user?.stats?.currentWeight || 75.0;
+      
+      // Calculate new points: 10 XP for starting + 2 XP per minute
+      const xpEarned = 10 + Math.floor(sessionSeconds / 60) * 2;
+      const newPoints = (user?.stats?.points || 0) + xpEarned;
+      
+      // Calculate calories: ~8 calories per minute
+      const caloriesEarned = Math.floor(sessionSeconds / 60) * 8;
+      
+      // Calculate weight change: ~0.01kg per 100 calories (simulated)
+      const weightLoss = (caloriesEarned / 100) * 0.01;
+      const newWeight = parseFloat((currentWeight - weightLoss).toFixed(2));
+
+      // Simple level calculation: 1 level per 1000 XP
+      const newLevel = Math.max(user?.stats?.level || 1, Math.floor(newPoints / 1000) + 1);
+
+      await updateStats({
+        totalHours: currentHours + hoursAdded,
+        workoutsCompleted: currentWorkouts + 1,
+        points: newPoints,
+        level: newLevel,
+        caloriesBurned: currentCalories + caloriesEarned,
+        currentWeight: newWeight
+      });
+      
+      setWorkoutTimer(0);
+    }
+    setIsSyncing(!isSyncing);
+  };
 
   React.useEffect(() => {
     localStorage.setItem('forgex_live_traffic', trafficCount.toString());
@@ -126,13 +248,13 @@ export default function Dashboard() {
                 <span className="text-[10px] font-bold tracking-[0.3em] uppercase text-white/70">Personal Dashboard</span>
               </div>
               <h1 className="font-heading text-5xl md:text-6xl lg:text-7xl text-white uppercase tracking-tighter leading-none">
-                G'DAY, <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-amber-200">{user.name.split(' ')[0]}</span>
+                G'DAY, <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-amber-200">{user?.name?.split(' ')[0] || 'Athlete'}</span>
               </h1>
             </motion.div>
 
             <div className="flex items-center gap-3">
               <div className="w-12 h-12 rounded-full border-2 border-primary/50 overflow-hidden shadow-[0_0_20px_rgba(211,165,35,0.2)]">
-                <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${user.name}`} alt="Profile" className="w-full h-full bg-white/5" />
+                <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${user?.name || 'Athlete'}`} alt="Profile" className="w-full h-full bg-white/5" />
               </div>
               <button onClick={() => { logout(); navigate('/'); }} className="w-12 h-12 rounded-full bg-white/5 border border-white/10 hover:bg-red-500/20 hover:border-red-500/50 hover:text-red-500 transition-all flex items-center justify-center">
                 <LogOut className="w-4 h-4" />
@@ -140,25 +262,52 @@ export default function Dashboard() {
             </div>
           </div>
 
-          {/* Milestone Alert Banner (RESTORED) */}
-          <motion.div 
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="mb-10 bg-gradient-to-r from-[#d3a523]/30 via-[#d3a523]/10 to-transparent border-2 border-[#d3a523]/60 rounded-2xl p-5 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 backdrop-blur-2xl shadow-[0_0_50px_rgba(211,165,35,0.2)]"
-          >
-            <div className="flex items-center gap-5">
-              <div className="w-12 h-12 rounded-full bg-primary flex items-center justify-center text-black shrink-0 animate-pulse">
-                <Target className="w-6 h-6" />
-              </div>
-              <div>
-                <h4 className="font-heading text-xl text-primary uppercase tracking-widest leading-tight drop-shadow-md">Milestone Unlocked!</h4>
-                <p className="text-[11px] text-white/90 font-bold tracking-[0.2em] uppercase mt-1">You've reached your 5kg weight loss goal. Keep crushing it!</p>
-              </div>
-            </div>
-            <button className="px-8 py-3 bg-white text-black text-[10px] font-bold tracking-[0.2em] uppercase rounded-xl hover:bg-primary transition-all shadow-lg w-full md:w-auto">
-              Claim Reward
-            </button>
-          </motion.div>
+          {/* Dynamic Milestone Banner (Full Width Slim) */}
+          <div className="mb-10">
+            {(() => {
+              const userXP = user?.stats?.points || 0;
+              const earnedBadges = user?.stats?.badges || [];
+              const nextBadge = ALL_BADGES.find(b => !earnedBadges.find(ub => ub.title === b.title));
+
+              if (!nextBadge) return null;
+              const isReached = userXP >= nextBadge.requiredXP;
+
+              return (
+                <motion.div 
+                  initial={{ opacity: 0, y: -20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className={`relative overflow-hidden rounded-2xl p-4 flex flex-col md:flex-row items-center justify-between gap-4 backdrop-blur-3xl border ${
+                    isReached 
+                      ? 'bg-gradient-to-r from-[#d3a523]/20 via-[#d3a523]/5 to-transparent border-[#d3a523]/40' 
+                      : 'bg-white/[0.03] border-white/10'
+                  }`}
+                >
+                  <div className="flex items-center gap-4">
+                    <div className={`w-10 h-10 rounded-full flex items-center justify-center ${isReached ? 'bg-primary text-black animate-pulse' : 'bg-white/5 text-white/20'}`}>
+                      <Trophy className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h4 className={`font-heading text-lg ${isReached ? 'text-primary' : 'text-white/60'} uppercase tracking-widest leading-none`}>
+                        {isReached ? 'Milestone Reached!' : 'Next Rank'}
+                      </h4>
+                      <p className="text-[9px] font-bold tracking-[0.1em] uppercase text-white/40 mt-1">
+                        {isReached ? `Unlock the ${nextBadge.title} Badge` : `Earn XP for ${nextBadge.title}`}
+                      </p>
+                    </div>
+                  </div>
+                  <button 
+                    disabled={!isReached}
+                    onClick={() => updateBadges({ ...nextBadge, active: true })}
+                    className={`px-6 py-2 text-[9px] font-bold tracking-[0.2em] uppercase rounded-lg transition-all ${
+                      isReached ? 'bg-white text-black hover:bg-primary' : 'bg-white/5 text-white/10 cursor-not-allowed'
+                    }`}
+                  >
+                    {isReached ? 'Claim Reward' : 'Locked'}
+                  </button>
+                </motion.div>
+              );
+            })()}
+          </div>
 
           {/* MAIN GRID */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
@@ -197,8 +346,8 @@ export default function Dashboard() {
               <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
                 {[
                   { label: 'Workouts', value: user?.stats?.workoutsCompleted || 0, icon: Activity, color: 'text-primary' },
-                  { label: 'Avg Pulse', value: '72', icon: Zap, color: 'text-amber-400' },
-                  { label: 'Burn Rate', value: '450', icon: TrendingUp, color: 'text-orange-400' },
+                  { label: 'Kcal Burned', value: user?.stats?.caloriesBurned || 0, icon: Zap, color: 'text-amber-400' },
+                  { label: 'Current Weight', value: `${user?.stats?.currentWeight || 75} kg`, icon: Scale, color: 'text-orange-400' },
                   { label: 'Focus Score', value: '92%', icon: Trophy, color: 'text-blue-400' },
                 ].map((stat, i) => (
                   <motion.div 
@@ -228,7 +377,7 @@ export default function Dashboard() {
                       <Scale className="w-5 h-5 text-primary" /> Weight Progress
                     </h3>
                     <div className="px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-[9px] font-bold tracking-widest uppercase">
-                      -7.1 kg
+                      {(82.0 - (user?.stats?.currentWeight || 75.0)).toFixed(1)} kg Lost
                     </div>
                   </div>
                   <div className="h-[200px] w-full">
@@ -298,12 +447,49 @@ export default function Dashboard() {
             {/* RIGHT COLUMN: Profile & Badges */}
             <div className="lg:col-span-4 space-y-8">
               
+              {/* ForgeWatch Sync Widget (Compact) */}
+              <motion.div 
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="bg-gradient-to-br from-white/[0.08] to-white/[0.02] border border-white/10 rounded-[2.5rem] p-6 backdrop-blur-xl relative overflow-hidden"
+              >
+                <div className="flex items-center justify-between mb-6">
+                  <div className="flex items-center gap-3">
+                    <Activity className="w-5 h-5 text-primary" />
+                    <span className="font-heading text-sm tracking-widest uppercase text-white">ForgeWatch</span>
+                  </div>
+                  <div className={`w-2 h-2 rounded-full ${isSyncing ? 'bg-red-500 animate-ping' : 'bg-green-500'}`} />
+                </div>
+
+                <div className="flex justify-between items-center mb-6">
+                  <div>
+                    <div className="text-2xl font-heading text-white">{livePulse} <span className="text-[8px] text-white/30 uppercase">BPM</span></div>
+                  </div>
+                  <div className="text-right">
+                    <div className="text-xl font-heading text-white">
+                      {Math.floor(workoutTimer / 60)}:{(workoutTimer % 60).toString().padStart(2, '0')}
+                    </div>
+                  </div>
+                </div>
+
+                <button 
+                  onClick={handleSyncToggle}
+                  className={`w-full py-3 rounded-xl text-[9px] font-bold tracking-[0.2em] uppercase transition-all ${
+                    isSyncing 
+                      ? 'bg-red-500/20 border border-red-500/40 text-red-500' 
+                      : 'bg-primary/20 border border-primary/40 text-primary'
+                  }`}
+                >
+                  {isSyncing ? 'Stop & Sync' : 'Start Track'}
+                </button>
+              </motion.div>
+
               {/* Profile Card & Badges Combined (RESTORED) */}
               <div className="bg-gradient-to-b from-white/[0.08] to-white/[0.02] border border-white/10 shadow-2xl rounded-[3rem] p-10 text-center relative overflow-hidden backdrop-blur-xl">
                 <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-primary to-transparent" />
                 <div className="relative z-10">
-                  <h3 className="font-heading text-3xl text-white mb-1 uppercase tracking-tight">{user.name}</h3>
-                  <p className="text-primary text-[10px] font-bold tracking-[0.4em] uppercase mb-6">{user.plan} MEMBER</p>
+                  <h3 className="font-heading text-3xl text-white mb-1 uppercase tracking-tight">{user?.name || 'Athlete'}</h3>
+                  <p className="text-primary text-[10px] font-bold tracking-[0.4em] uppercase mb-6">{user?.plan || 'Standard'} MEMBER</p>
                   
                   {/* Streak Badge */}
                   <div className="inline-flex items-center gap-2 bg-orange-500/10 border border-orange-500/20 px-4 py-1.5 rounded-full mb-8">
@@ -326,36 +512,62 @@ export default function Dashboard() {
                   <div className="text-left border-t border-white/10 pt-8 mt-2">
                     <div className="flex justify-between items-center mb-6">
                       <h4 className="font-heading text-lg tracking-widest uppercase text-white">Earned Badges</h4>
-                      <span className="text-[9px] font-bold text-primary uppercase tracking-widest">3 / 12 Unlocked</span>
+                      <span className="text-[9px] font-bold text-primary uppercase tracking-widest">
+                        {user?.stats?.badges?.length || 0} / {ALL_BADGES.length} Unlocked
+                      </span>
                     </div>
-                    <div className="space-y-3">
-                      {[
-                        { title: 'Consistent King', desc: '7 days streak', longDesc: 'You have consistently hit the gym for 7 days straight without missing a session. Your dedication is inspiring!', date: 'April 12, 2026', rarity: 'Rare', img: 'https://cdn-icons-png.flaticon.com/512/5968/5968923.png', active: true, color: 'from-amber-400/20 to-yellow-600/5' },
-                        { title: 'Heavy Lifter', desc: 'Moved 10,000kg', longDesc: 'You have moved a cumulative weight of 10,000kg across all your lifts. Your strength is reaching legendary levels.', date: 'April 20, 2026', rarity: 'Epic', img: 'https://cdn-icons-png.flaticon.com/512/2964/2964514.png', active: true, color: 'from-primary/20 to-amber-600/5' },
-                        { title: 'Early Bird', desc: '5 AM workouts', longDesc: 'Rising before the sun! You have completed 10 workouts before 6:00 AM. Discipline starts at dawn.', date: 'April 25, 2026', rarity: 'Common', img: 'https://cdn-icons-png.flaticon.com/512/1163/1163763.png', active: true, color: 'from-blue-400/20 to-indigo-600/5' },
-                        { title: 'Iron Lung', desc: 'Cardio master', longDesc: 'Mastered the art of endurance. Complete a 10km run in under 45 minutes to unlock this achievement.', date: 'Locked', rarity: 'Legendary', img: 'https://cdn-icons-png.flaticon.com/512/2964/2964512.png', active: false, color: 'from-purple-500/20 to-pink-600/5' },
-                      ].map((badge, i) => (
-                        <motion.div 
-                          key={i} 
-                          whileHover={{ scale: 1.05, x: 5 }}
-                          whileTap={{ scale: 0.95 }}
-                          onClick={() => setSelectedBadge(badge)}
-                          className={`flex items-center gap-4 p-4 rounded-[2rem] border transition-all cursor-pointer group ${badge.active ? 'bg-white/5 border-white/10 hover:border-primary/50 shadow-xl' : 'bg-white/[0.02] border-white/5 opacity-40 grayscale'}`}
-                        >
-                          <div className={`w-14 h-14 shrink-0 rounded-2xl flex items-center justify-center relative overflow-hidden shadow-lg p-2 ${badge.active ? `bg-gradient-to-br ${badge.color}` : 'bg-white/5'}`}>
-                            <img src={badge.img} alt={badge.title} className="w-full h-full object-contain relative z-10 drop-shadow-[0_0_10px_rgba(255,255,255,0.3)]" />
-                          </div>
-                          <div className="flex-1">
-                            <div className={`text-[12px] font-heading uppercase tracking-widest ${badge.active ? 'text-white' : 'text-white/40'}`}>{badge.title}</div>
-                            <div className={`text-[9px] font-bold uppercase tracking-[0.2em] mt-1 ${badge.active ? 'text-primary' : 'text-white/20'}`}>{badge.desc}</div>
-                          </div>
-                          {badge.active && (
-                            <div className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all">
-                              <ChevronRight className="w-4 h-4 text-white/40" />
+                    <div className="space-y-3 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
+                      {(() => {
+                        const earnedBadges = user?.stats?.badges || [];
+                        
+                        // Merge all badges, tagging them as active/locked
+                        const displayBadges = ALL_BADGES.map(template => {
+                          const earned = earnedBadges.find(eb => eb.title === template.title);
+                          return {
+                            ...template,
+                            active: !!earned,
+                            date: earned ? earned.date : 'Locked',
+                            earnedAt: earned ? new Date(earned.date).getTime() : 0
+                          };
+                        });
+
+                        // Sort: Earned first (newest first), then by required XP
+                        const sortedBadges = displayBadges.sort((a, b) => {
+                          if (a.active !== b.active) return b.active ? 1 : -1;
+                          if (a.active) return b.earnedAt - a.earnedAt;
+                          return a.requiredXP - b.requiredXP;
+                        });
+
+                        return sortedBadges.map((badge, i) => (
+                          <motion.div 
+                            key={badge.id} 
+                            whileHover={badge.active ? { scale: 1.05, x: 5 } : {}}
+                            whileTap={badge.active ? { scale: 0.95 } : {}}
+                            onClick={() => badge.active && setSelectedBadge(badge)}
+                            className={`flex items-center gap-4 p-4 rounded-[2rem] border transition-all cursor-pointer group ${badge.active ? 'bg-white/5 border-white/10 hover:border-primary/50 shadow-xl' : 'bg-white/[0.02] border-white/5 opacity-40 grayscale'}`}
+                          >
+                            <div className={`w-14 h-14 shrink-0 rounded-2xl flex items-center justify-center relative overflow-hidden shadow-lg p-2 ${badge.active ? `bg-gradient-to-br ${badge.color}` : 'bg-white/5'}`}>
+                              <img src={badge.img} alt={badge.title} className="w-full h-full object-contain relative z-10 drop-shadow-[0_0_10px_rgba(255,255,255,0.3)]" />
                             </div>
-                          )}
-                        </motion.div>
-                      ))}
+                            <div className="flex-1">
+                              <div className={`text-[12px] font-heading uppercase tracking-widest ${badge.active ? 'text-white' : 'text-white/40'}`}>{badge.title}</div>
+                              <div className="flex items-center gap-2 mt-1">
+                                <div className={`text-[9px] font-bold uppercase tracking-[0.2em] ${badge.active ? 'text-primary' : 'text-white/20'}`}>{badge.desc}</div>
+                                {!badge.active && (
+                                  <div className="text-[7px] text-white/30 font-bold uppercase border border-white/10 px-1.5 py-0.5 rounded-full">
+                                    {badge.requiredXP} XP
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                            {badge.active && (
+                              <div className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all">
+                                <ChevronRight className="w-4 h-4 text-white/40" />
+                              </div>
+                            )}
+                          </motion.div>
+                        ));
+                      })()}
                     </div>
                   </div>
                 </div>
@@ -371,12 +583,7 @@ export default function Dashboard() {
                 </div>
                 
                 <div className="space-y-3">
-                  {[
-                    { rank: 1, name: 'Kasun Perera', xp: 2450, level: 25, active: true },
-                    { rank: 2, name: 'Dilini J.', xp: 2100, level: 21, active: false },
-                    { rank: 3, name: user?.name.split(' ')[0] || 'You', xp: user?.stats?.points || 0, level: user?.stats?.level || 1, isMe: true },
-                    { rank: 4, name: 'Roshan F.', xp: 1800, level: 18, active: false },
-                  ].map((entry, idx) => (
+                  {leaderboard.length > 0 ? leaderboard.map((entry, idx) => (
                     <div 
                       key={idx} 
                       className={`flex items-center justify-between p-3 rounded-2xl border transition-all ${entry.isMe ? 'bg-primary/20 border-primary/40 shadow-[0_0_20px_rgba(211,165,35,0.1)]' : 'bg-white/5 border-white/5'}`}
@@ -387,7 +594,7 @@ export default function Dashboard() {
                           <div className="w-8 h-8 rounded-full bg-white/10 border border-white/10 flex items-center justify-center overflow-hidden">
                             <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${entry.name}`} alt={entry.name} />
                           </div>
-                          {entry.active && <div className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 bg-green-500 rounded-full border-2 border-black" />}
+                          {entry.rank === 1 && <div className="absolute -top-1 -right-1 text-[10px]">👑</div>}
                         </div>
                         <div>
                           <div className={`text-[11px] font-bold uppercase tracking-widest ${entry.isMe ? 'text-white' : 'text-white/80'}`}>{entry.name}</div>
@@ -399,7 +606,11 @@ export default function Dashboard() {
                         <div className="text-[7px] font-bold text-white/30 uppercase tracking-widest">XP</div>
                       </div>
                     </div>
-                  ))}
+                  )) : (
+                    <div className="text-center py-4 text-white/30 text-[10px] font-bold uppercase tracking-widest">
+                      Loading rankings...
+                    </div>
+                  )}
                 </div>
               </div>
 
@@ -526,4 +737,6 @@ export default function Dashboard() {
 
     </div>
   );
-}
+};
+
+export default Dashboard;

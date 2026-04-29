@@ -1,16 +1,39 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import Navbar from '../components/Navbar';
 import Sidebar from '../components/Sidebar';
 import { TrendingUp, Scale, Target, Activity } from 'lucide-react';
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, AreaChart, Area } from 'recharts';
-
 import { useAuth } from '../context/AuthContext';
+import { supabase } from '../lib/supabase';
 
 const Progress = () => {
   const { user } = useAuth();
-  
-  const workoutHistory = JSON.parse(localStorage.getItem('forgex_history') || '[]');
+  const [workoutHistory, setWorkoutHistory] = useState([]);
+  const [historyLoading, setHistoryLoading] = useState(true);
+
+  useEffect(() => {
+    if (user) {
+      fetchWorkoutHistory();
+    }
+  }, [user]);
+
+  const fetchWorkoutHistory = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('workouts')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('date', { ascending: false });
+
+      if (error) throw error;
+      setWorkoutHistory(data);
+    } catch (err) {
+      console.error('Error fetching workout history:', err.message);
+    } finally {
+      setHistoryLoading(false);
+    }
+  };
 
   const weightData = [
     { month: 'Jan', weight: 85 }, { month: 'Feb', weight: 83 },
@@ -71,14 +94,18 @@ const Progress = () => {
           <div className="mb-12">
             <h3 className="font-heading text-2xl uppercase tracking-widest mb-6">Recent Activity</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {workoutHistory.length > 0 ? (
-                workoutHistory.slice().reverse().map((h, i) => (
+              {historyLoading ? (
+                <div className="col-span-full py-10 flex justify-center">
+                  <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+                </div>
+              ) : workoutHistory.length > 0 ? (
+                workoutHistory.map((h, i) => (
                   <div key={i} className="p-5 rounded-2xl bg-white/5 border border-white/10 flex justify-between items-center">
                     <div>
                       <div className="text-[11px] font-bold uppercase tracking-widest text-white">{h.title}</div>
                       <div className="text-[8px] font-bold uppercase tracking-widest text-white/30 mt-1">{new Date(h.date).toLocaleDateString()}</div>
                     </div>
-                    <div className="text-primary font-heading text-lg">+{h.xp} XP</div>
+                    <div className="text-primary font-heading text-lg">+{Math.floor(h.calories / 2)} XP</div>
                   </div>
                 ))
               ) : (

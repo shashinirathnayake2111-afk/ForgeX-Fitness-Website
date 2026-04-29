@@ -23,14 +23,23 @@ export default function Register() {
   const { register } = useAuth();
   const navigate = useNavigate();
 
-  const handleRegister = (e) => {
+  const handleRegister = async (e) => {
     e.preventDefault();
+    setError('');
+    
     if (!formData.name || !formData.email || !formData.password) {
       setError('Please fill all fields');
       return;
     }
-    register(formData);
-    navigate('/dashboard');
+
+    try {
+      await register(formData);
+      // If registration is successful, navigation will happen via AuthContext state change 
+      // or we can manually navigate here.
+      navigate('/dashboard');
+    } catch (err) {
+      setError(err.message || 'Registration failed. Please try again.');
+    }
   };
 
   return (
@@ -55,6 +64,19 @@ export default function Register() {
               Start your transformation journey today with elite training and nutrition.
             </p>
           </motion.div>
+          
+          <AnimatePresence>
+            {error && (
+              <motion.div 
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+                className="mb-6 p-4 bg-red-500/10 border border-red-500/20 rounded-2xl text-red-500 text-xs font-bold tracking-widest text-center uppercase overflow-hidden"
+              >
+                {error}
+              </motion.div>
+            )}
+          </AnimatePresence>
 
           <div className="grid md:grid-cols-5 gap-8 items-start">
             {/* Steps Indicator */}

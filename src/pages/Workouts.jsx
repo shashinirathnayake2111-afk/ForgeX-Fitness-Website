@@ -4,6 +4,7 @@ import Navbar from '../components/Navbar';
 import Sidebar from '../components/Sidebar';
 import { Play, Plus, Dumbbell, Flame, Zap, X, Trophy, CheckCircle2 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { supabase } from '../lib/supabase';
 
 const Workouts = () => {
   const { user, updateStats } = useAuth();
@@ -30,30 +31,47 @@ const Workouts = () => {
     setLogStatus('logging');
   };
 
-  const handleFinishWorkout = () => {
+  const handleFinishWorkout = async () => {
     setLogStatus('finished');
     const earnedXp = activeRoutine.xp;
     const currentPoints = user?.stats?.points || 0;
     const currentWorkouts = user?.stats?.workoutsCompleted || 0;
     
     const newPoints = currentPoints + earnedXp;
-    const newLevel = Math.floor(newPoints / 100) + 1;
+    const newLevel = Math.max(user?.stats?.level || 1, Math.floor(newPoints / 1000) + 1);
+    
+    const caloriesBurned = earnedXp * 2; // XP based calorie calculation
+    const currentCalories = user?.stats?.caloriesBurned || 0;
+    const currentWeight = user?.stats?.currentWeight || 75.0;
+    const weightLoss = (caloriesBurned / 100) * 0.01;
+    const newWeight = parseFloat((currentWeight - weightLoss).toFixed(2));
 
-    updateStats({
+    // 1. Update Profile Stats in Supabase
+    await updateStats({
       points: newPoints,
       level: newLevel,
-      workoutsCompleted: currentWorkouts + 1
+      workoutsCompleted: currentWorkouts + 1,
+      caloriesBurned: currentCalories + caloriesBurned,
+      currentWeight: newWeight
     });
 
-    // Save to history (mock)
-    const history = JSON.parse(localStorage.getItem('forgex_history') || '[]');
-    history.push({
-      id: Date.now(),
-      title: activeRoutine.title,
-      date: new Date().toISOString(),
-      xp: earnedXp
-    });
-    localStorage.setItem('forgex_history', JSON.stringify(history));
+    // 2. Save Workout Session to Supabase
+    try {
+      const { error } = await supabase
+        .from('workouts')
+        .insert([{
+          user_id: user.id,
+          title: activeRoutine.title,
+          type: activeRoutine.level, // Using level as type for now
+          duration: activeRoutine.duration,
+          calories: earnedXp * 2, // Mock calorie calculation
+          date: new Date().toISOString()
+        }]);
+
+      if (error) throw error;
+    } catch (err) {
+      console.error('Error logging workout to Supabase:', err.message);
+    }
 
     setTimeout(() => {
       setIsLogging(false);
