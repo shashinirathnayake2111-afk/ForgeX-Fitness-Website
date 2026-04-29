@@ -15,6 +15,8 @@ const Navbar = () => {
   const isAiPage = location.pathname === '/ai-planner';
   const isRegisterPage = location.pathname === '/register';
   const isDashboardPage = location.pathname === '/dashboard';
+  const appPages = ['/dashboard', '/classes', '/workouts', '/progress', '/settings', '/ai-planner'];
+  const isAppPage = appPages.includes(location.pathname);
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
@@ -33,7 +35,7 @@ const Navbar = () => {
 
   const handleSectionLink = (e, href) => {
     e.preventDefault();
-    if (isAiPage || isRegisterPage || isDashboardPage) {
+    if (isAppPage || isRegisterPage) {
       navigate('/');
       setTimeout(() => {
         const el = document.querySelector(href);
@@ -84,19 +86,21 @@ const Navbar = () => {
           </Link>
 
           {/* Desktop Links */}
-          <div className="hidden lg:flex space-x-4 xl:space-x-8">
-            {menuItems.map((item) => (
-              <a
-                key={item.name}
-                href={item.href}
-                onClick={(e) => handleSectionLink(e, item.href)}
-                className="text-black/70 dark:text-light/80 hover:text-primary transition-all duration-300 text-[12px] xl:text-[13px] font-bold tracking-[0.2em] relative group"
-              >
-                {item.name}
-                <span className="absolute -bottom-1 left-0 w-0 h-[1.5px] bg-primary transition-all duration-500 group-hover:w-full" />
-              </a>
-            ))}
-          </div>
+          {(!isAppPage) && (
+            <div className="hidden lg:flex space-x-4 xl:space-x-8">
+              {menuItems.map((item) => (
+                <a
+                  key={item.name}
+                  href={item.href}
+                  onClick={(e) => handleSectionLink(e, item.href)}
+                  className="text-black/70 dark:text-light/80 hover:text-primary transition-all duration-300 text-[12px] xl:text-[13px] font-bold tracking-[0.2em] relative group"
+                >
+                  {item.name}
+                  <span className="absolute -bottom-1 left-0 w-0 h-[1.5px] bg-primary transition-all duration-500 group-hover:w-full" />
+                </a>
+              ))}
+            </div>
+          )}
 
           {/* Desktop Actions */}
           <div className="hidden lg:flex items-center gap-4 xl:gap-6">
@@ -178,7 +182,7 @@ const Navbar = () => {
             className="fixed inset-0 z-[50] lg:hidden bg-light dark:bg-black p-10 flex flex-col justify-center gap-12"
           >
             <div className="flex flex-col gap-8">
-              {menuItems.map((item, idx) => (
+              {(!isAppPage) && menuItems.map((item, idx) => (
                 <motion.a
                   key={item.name}
                   initial={{ opacity: 0, x: 20 }}

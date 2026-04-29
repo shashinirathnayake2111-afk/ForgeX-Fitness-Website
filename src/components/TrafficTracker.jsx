@@ -40,9 +40,15 @@ const TrafficTracker = ({ count }) => {
         </div>
       </div>
 
-      <div className="flex items-center gap-3 p-4 rounded-2xl bg-white/10 border border-white/20 text-white/60 text-[8px] font-bold tracking-[0.2em] uppercase leading-tight">
-        <Info className="w-4 h-4 text-primary" />
-        Helping our community stay safe and productive.
+      <div className="flex items-center gap-4 mt-2">
+        <div className="flex -space-x-3">
+          <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=John" className="w-10 h-10 rounded-full border-2 border-[#111] bg-white/10" alt="Friend" />
+          <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Sarah" className="w-10 h-10 rounded-full border-2 border-[#111] bg-white/10" alt="Friend" />
+          <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Mike" className="w-10 h-10 rounded-full border-2 border-[#111] bg-white/10" alt="Friend" />
+        </div>
+        <div className="text-xs text-white/70 font-light leading-tight">
+          <span className="font-bold text-white">Kasun</span> & 2 friends are lifting right now.
+        </div>
       </div>
     </div>
   );

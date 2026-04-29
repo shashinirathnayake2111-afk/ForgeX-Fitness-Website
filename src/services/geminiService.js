@@ -143,3 +143,70 @@ export const generateFitnessPlan = async (userData) => {
 
 
 
+export const generateChatResponse = async (userMessage, userProfile) => {
+  const msg = (userMessage || '').toLowerCase().trim();
+  const firstName = userProfile?.name ? userProfile.name.split(' ')[0] : 'Athlete';
+  
+  // Local Intent Detection (Smart Fallbacks)
+  if (msg === 'hi' || msg === 'hello' || msg === 'hey' || msg.includes('hello') || msg.includes('hey')) {
+    return `Hello ${firstName}! I'm ForgeBot, your AI fitness coach. How can I help you crush your goals today?`;
+  }
+
+  if (msg === 'hi' || msg.includes('hi ')) {
+     return `Hello ${firstName}! I'm ForgeBot, your AI fitness coach. How can I help you crush your goals today?`;
+  }
+  
+  if (msg.includes('kohomada') || msg.includes('how are you') || msg.includes('how r u')) {
+    return `I'm doing great and ready to help you get stronger, ${firstName}! How are you feeling today?`;
+  }
+  
+  if (msg.includes('tired') || msg.includes('exhausted') || msg.includes('no energy')) {
+    return `I hear you, ${firstName}. But remember: the hardest part is showing up! Give me 10 minutes of effort, and if you still feel gassed, we'll pivot. You've got this!`;
+  }
+
+  if (msg.includes('thanks') || msg.includes('thank you') || msg.includes('sthuthi')) {
+    return `You're welcome, ${firstName}! Now let's get back to work!`;
+  }
+
+  const FALLBACKS = [
+    "Keep pushing, Athlete! Consistency is the only secret to success.",
+    "The iron never lies. Stay focused and hit your goals today!",
+    "No pain, no gain! ForgeX is where legends are made.",
+    "Your future self will thank you for today's effort. Don't quit!",
+    "Success starts with discipline. Get back to the grind!"
+  ];
+
+  if (!API_KEY || API_KEY === 'undefined') {
+    return FALLBACKS[Math.floor(Math.random() * FALLBACKS.length)];
+  }
+
+  const body = {
+    contents: [{ role: 'user', parts: [{ text: `You are ForgeBot, a high-performance AI fitness coach. 
+      Tone: motivating, professional, intense.
+      User: ${firstName}
+      Message: ${userMessage}` }] }],
+    generationConfig: { temperature: 0.8, maxOutputTokens: 200 },
+  };
+
+  const shuffledEndpoints = [...ENDPOINTS].sort(() => Math.random() - 0.5);
+
+  for (const { url, label } of shuffledEndpoints) {
+    try {
+      const res = await fetch(`${url}?key=${API_KEY}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+        if (text) return text;
+      }
+    } catch (err) {
+      console.warn(`[Gemini Chat] ${label} failed`, err);
+    }
+  }
+  
+  return FALLBACKS[Math.floor(Math.random() * FALLBACKS.length)];
+};

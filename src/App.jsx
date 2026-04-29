@@ -6,6 +6,11 @@ import LandingPage from './pages/LandingPage';
 import AiPlanner from './pages/AiPlanner';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
+import Classes from './pages/Classes';
+import Workouts from './pages/Workouts';
+import Progress from './pages/Progress';
+import Settings from './pages/Settings';
+import AiCoach from './components/AiCoach';
 
 // Protected Route Component
 const ProtectedRoute = ({ children }) => {
@@ -19,7 +24,12 @@ const ProtectedRoute = ({ children }) => {
   
   if (!user) return <Navigate to="/register" replace />;
   
-  return children;
+  return (
+    <>
+      {children}
+      <AiCoach />
+    </>
+  );
 };
 
 function App() {
@@ -34,6 +44,26 @@ function App() {
             <Route path="/dashboard" element={
               <ProtectedRoute>
                 <Dashboard />
+              </ProtectedRoute>
+            } />
+            <Route path="/classes" element={
+              <ProtectedRoute>
+                <Classes />
+              </ProtectedRoute>
+            } />
+            <Route path="/workouts" element={
+              <ProtectedRoute>
+                <Workouts />
+              </ProtectedRoute>
+            } />
+            <Route path="/progress" element={
+              <ProtectedRoute>
+                <Progress />
+              </ProtectedRoute>
+            } />
+            <Route path="/settings" element={
+              <ProtectedRoute>
+                <Settings />
               </ProtectedRoute>
             } />
           </Routes>

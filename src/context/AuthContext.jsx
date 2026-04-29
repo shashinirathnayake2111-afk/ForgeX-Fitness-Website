@@ -18,7 +18,9 @@ export const AuthProvider = ({ children }) => {
       stats: {
         workoutsCompleted: 0,
         streak: 0,
-        totalHours: 0
+        totalHours: 0,
+        points: 0,
+        level: 1
       }
     };
     localStorage.setItem('forgex_user', JSON.stringify(newUser));
@@ -44,8 +46,19 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
   };
 
+  const updateStats = (newStats) => {
+    if (user) {
+      const updatedUser = {
+        ...user,
+        stats: { ...user.stats, ...newStats }
+      };
+      localStorage.setItem('forgex_user', JSON.stringify(updatedUser));
+      setUser(updatedUser);
+    }
+  };
+
   return (
-    <AuthContext.Provider value={{ user, loading, register, login, logout }}>
+    <AuthContext.Provider value={{ user, loading, register, login, logout, updateStats }}>
       {children}
     </AuthContext.Provider>
   );
