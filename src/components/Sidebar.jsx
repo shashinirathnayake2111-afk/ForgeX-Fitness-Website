@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { LayoutDashboard, Dumbbell, TrendingUp, Settings, Calendar } from 'lucide-react';
+import { LayoutDashboard, Dumbbell, TrendingUp, Settings, Calendar, Zap } from 'lucide-react';
 
 import { useAuth } from '../context/AuthContext';
 
@@ -14,6 +14,7 @@ const Sidebar = () => {
     { name: 'Classes', path: '/classes', icon: Calendar },
     { name: 'Workouts', path: '/workouts', icon: Dumbbell },
     { name: 'Progress', path: '/progress', icon: TrendingUp },
+    { name: 'Knowledge', path: '/knowledge', icon: Zap },
     { name: 'Settings', path: '/settings', icon: Settings },
   ];
 

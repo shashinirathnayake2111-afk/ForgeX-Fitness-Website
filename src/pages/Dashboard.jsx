@@ -7,7 +7,7 @@ import TrafficTracker from '../components/TrafficTracker';
 import { Link, useNavigate } from 'react-router-dom';
 import { 
   Play, Flame, Zap, Trophy, TrendingUp, Calendar, ChevronRight, MessageSquare, Bell, Search, Settings, Filter, Download, ExternalLink, Share2, MoreHorizontal, User, LogOut,
-  Activity, Dumbbell, ArrowRight, Medal, Target, Scale, QrCode, Plus, Users, Sparkles, Award
+  Activity, Dumbbell, ArrowRight, Medal, Target, Scale, QrCode, Plus, Users, Award, Lightbulb
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { 
@@ -438,6 +438,37 @@ const Dashboard = () => {
                     className="inline-flex items-center gap-3 bg-white text-black px-8 py-4 rounded-2xl text-[10px] font-bold tracking-[0.2em] uppercase hover:bg-primary transition-all duration-500 shadow-lg"
                   >
                     Launch Planner <ArrowRight className="w-4 h-4" />
+                  </Link>
+                </div>
+              </motion.div>
+
+              {/* Pro Tip of the Day */}
+              <motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="bg-gradient-to-br from-[#d3a523]/10 to-transparent border border-[#d3a523]/20 p-8 rounded-[2.5rem] relative overflow-hidden group"
+              >
+                <div className="absolute -top-10 -right-10 opacity-10 group-hover:opacity-20 transition-opacity">
+                  <Zap className="w-40 h-40" />
+                </div>
+                <div className="flex flex-col md:flex-row items-center gap-8 relative z-10">
+                  <div className="w-16 h-16 rounded-2xl bg-primary/20 flex items-center justify-center shrink-0 border border-primary/30">
+                    <Lightbulb className="w-8 h-8 text-primary" />
+                  </div>
+                  <div className="flex-1 text-center md:text-left">
+                    <div className="flex items-center justify-center md:justify-start gap-2 mb-2">
+                      <span className="text-[9px] font-bold tracking-[0.3em] uppercase text-primary">Pro Tip of the Day</span>
+                    </div>
+                    <h3 className="font-heading text-2xl text-white uppercase tracking-tight mb-2">Master Your Mind-Muscle Connection</h3>
+                    <p className="text-white/50 text-sm font-light">
+                      Focusing on the muscle contracting rather than the weight moving can increase muscle growth by up to 20%. 
+                    </p>
+                  </div>
+                  <Link 
+                    to="/knowledge"
+                    className="px-6 py-3 bg-white/5 border border-white/10 hover:border-primary/50 hover:bg-primary/10 rounded-xl text-[9px] font-bold tracking-[0.2em] uppercase transition-all whitespace-nowrap"
+                  >
+                    View All Tips
                   </Link>
                 </div>
               </motion.div>

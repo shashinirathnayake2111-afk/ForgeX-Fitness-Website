@@ -20,7 +20,7 @@ export default function Register() {
     plan: 'Pro'
   });
   const [error, setError] = useState('');
-  const { register } = useAuth();
+  const { register, loginAsGuest } = useAuth();
   const navigate = useNavigate();
 
   const handleRegister = async (e) => {
@@ -159,6 +159,19 @@ export default function Register() {
                       className="w-full bg-primary text-black font-bold py-4 rounded-2xl tracking-widest uppercase text-xs hover:bg-white transition-all duration-300 shadow-[0_0_30px_rgba(211,165,35,0.3)] hover:shadow-none"
                     >
                       Next Step
+                    </button>
+
+                    <div className="relative">
+                      <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-white/10"></div></div>
+                      <div className="relative flex justify-center text-[10px] uppercase tracking-widest"><span className="bg-[#050505] px-4 text-white/20 font-bold">Or</span></div>
+                    </div>
+
+                    <button 
+                      type="button"
+                      onClick={() => { loginAsGuest(); navigate('/dashboard'); }}
+                      className="w-full bg-white/5 border border-white/10 text-white font-bold py-4 rounded-2xl tracking-widest uppercase text-xs hover:bg-white/10 transition-all"
+                    >
+                      Continue as Guest
                     </button>
                   </motion.form>
                 ) : (

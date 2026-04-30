@@ -108,6 +108,31 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
   };
 
+  const loginAsGuest = () => {
+    setLoading(true);
+    const guestUser = {
+      id: 'guest-123',
+      email: 'guest@forgex.com',
+      name: 'Guest Athlete',
+      user_metadata: { full_name: 'Guest Athlete' },
+      stats: {
+        workoutsCompleted: 12,
+        streak: 5,
+        totalHours: 24,
+        points: 1250,
+        level: 3,
+        caloriesBurned: 8400,
+        currentWeight: 78.5,
+        badges: [
+          { title: 'Early Bird', icon: 'Sun' },
+          { title: 'Consistency King', icon: 'Trophy' }
+        ]
+      }
+    };
+    setUser(guestUser);
+    setLoading(false);
+  };
+
   const updateStats = async (newStats) => {
     if (!user) return;
 
@@ -168,7 +193,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, register, login, logout, updateStats, updateBadges }}>
+    <AuthContext.Provider value={{ user, loading, register, login, logout, loginAsGuest, updateStats, updateBadges }}>
       {children}
     </AuthContext.Provider>
   );

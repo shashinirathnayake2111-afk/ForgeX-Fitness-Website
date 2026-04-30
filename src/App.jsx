@@ -11,6 +11,7 @@ import Workouts from './pages/Workouts';
 import Progress from './pages/Progress';
 import Settings from './pages/Settings';
 import AiCoach from './components/AiCoach';
+import FitnessKnowledge from './pages/FitnessKnowledge';
 
 // Protected Route Component
 const ProtectedRoute = ({ children }) => {
@@ -64,6 +65,11 @@ function App() {
             <Route path="/settings" element={
               <ProtectedRoute>
                 <Settings />
+              </ProtectedRoute>
+            } />
+            <Route path="/knowledge" element={
+              <ProtectedRoute>
+                <FitnessKnowledge />
               </ProtectedRoute>
             } />
           </Routes>
