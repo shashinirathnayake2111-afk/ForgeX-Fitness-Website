@@ -169,7 +169,7 @@ export const AuthProvider = ({ children }) => {
     if (!user) return;
 
     const currentBadges = user.stats.badges || [];
-    if (currentBadges.find(b => b.title === newBadge.title)) return; // Already unlocked
+    if (currentBadges.find(b => b.title === newBadge.title)) return; 
 
     const updatedBadges = [...currentBadges, { ...newBadge, date: new Date().toLocaleDateString() }];
 
